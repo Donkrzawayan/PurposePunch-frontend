@@ -15,4 +15,20 @@ axiosClient.interceptors.request.use((config) => {
   return config;
 });
 
+axiosClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    const { response } = error;
+
+    if (response && response.status === 401 && !window.location.pathname.includes('/login')) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default axiosClient;

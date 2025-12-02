@@ -101,3 +101,13 @@ export interface PaginatedResult<T> {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }
+
+// RFC 7807
+export interface ProblemDetails {
+  type?: string;
+  title?: string;
+  status?: number;
+  detail?: string;
+  instance?: string;
+  [key: string]: any;
+}
