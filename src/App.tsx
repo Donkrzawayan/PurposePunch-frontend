@@ -3,12 +3,12 @@ import LoginPage from './pages/LoginPage';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
+import CreateDecision from './pages/CreateDecision';
 
 // --- Placeholder -------------------------------- TODO: (src/pages/) ---
 const RegisterPage = () => <div className="p-8">Register Page (TODO)</div>;
 const Reflection = () => <div className="p-4">Decision Reflection Page (TODO)</div>;
 const CommunityFeed = () => <div className="p-4">Public Community Feed (TODO)</div>;
-const CreateDecision = () => <div className="p-4">Create New Decision (TODO)</div>;
 // -----------------------------------------------------------------------
 
 function App() {
