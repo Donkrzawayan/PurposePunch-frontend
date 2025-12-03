@@ -2,10 +2,11 @@ import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
+import Dashboard from './pages/Dashboard';
 
 // --- Placeholder -------------------------------- TODO: (src/pages/) ---
 const RegisterPage = () => <div className="p-8">Register Page (TODO)</div>;
-const Dashboard = () => <div className="p-4">My Private Decisions (TODO)</div>;
+const Reflection = () => <div className="p-4">Decision Reflection Page (TODO)</div>;
 const CommunityFeed = () => <div className="p-4">Public Community Feed (TODO)</div>;
 const CreateDecision = () => <div className="p-4">Create New Decision (TODO)</div>;
 // -----------------------------------------------------------------------
@@ -20,9 +21,10 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/create" element={<CreateDecision />} />
+          <Route path="/decision/:id" element={<Reflection />} />
         </Route>
         <Route path="/community" element={<CommunityFeed />} />
-        
+
       </Route>
     </Routes>
   );

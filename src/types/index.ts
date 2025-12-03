@@ -72,11 +72,11 @@ export interface DecisionDto {
   status: DecisionStatus;
   
   // PHASE 2: Reflection
-  actualOutcome?: string;
-  lessonsLearned?: string;
-  privateNotes?: string;
-  satisfaction?: SatisfactionScale;
-  reflectedAt?: string;
+  actualOutcome: string | null;
+  lessonsLearned: string | null;
+  privateNotes: string | null;
+  satisfaction: SatisfactionScale | null;
+  reflectedAt: string | null;
 }
 
 // --- PUBLIC POSTS
@@ -85,9 +85,9 @@ export interface PublicPostDto {
   authorNickname: string;
   title: string;
   description: string;
-  actualOutcome?: string;
-  lessonsLearned?: string;
-  satisfaction?: SatisfactionScale;
+  actualOutcome: string | null;
+  lessonsLearned: string | null;
+  satisfaction: SatisfactionScale | null;
   upvoteCount: number;
   publishedAt: string;
 }
