@@ -1,5 +1,7 @@
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { NavbarLink } from './NavbarLink';
+import { t } from '../textResources';
 
 const Layout = () => {
   const { logout } = useAuth();
@@ -17,15 +19,11 @@ const Layout = () => {
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <span className="font-bold text-xl text-blue-600">PurposePunch</span>
+                <span className="font-bold text-xl text-blue-600">{t.common.name}</span>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link to="/" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                  Dashboard
-                </Link>
-                <Link to="/community" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                  Community
-                </Link>
+                <NavbarLink to="/">{t.layout.dashboard}</NavbarLink>
+                <NavbarLink to="/community">{t.layout.community}</NavbarLink>
               </div>
             </div>
             <div className="flex items-center">
@@ -33,7 +31,7 @@ const Layout = () => {
                 onClick={handleLogout}
                 className="ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none"
               >
-                Logout
+                {t.layout.logout}
               </button>
             </div>
           </div>

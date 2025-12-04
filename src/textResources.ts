@@ -1,8 +1,14 @@
 export const t = {
   common: {
+    name: "Purpose:Punch!",
     loading: "Loading...",
     networkError: "Network error. Please try again.",
     cancel: "Cancel"
+  },
+  layout: {
+    dashboard: "Dashboard",
+    community: "Community",
+    logout: "Logout"
   },
   decision: {
     description: "Context / Reasoning",
