@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import type { ProblemDetails } from '../types';
+import { t } from '../textResources';
+import { FormField } from '../components/common/FormField';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -20,15 +22,15 @@ const LoginPage = () => {
 
     try {
       await login({ email, password });
-      navigate('/'); 
+      navigate('/');
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
+      if (axios.isAxiosError(err) && err.response?.data) {
         const data = err.response.data as ProblemDetails;
-        setError(data.detail || data.title || "Login failed.");
+        setError(data.detail || data.title || t.login.error);
       } else {
-        setError("Network error. Please try again later.");
+        setError(t.common.networkError);
       }
-      console.error("Login Error Details:", err);
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -38,7 +40,7 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Log in to PurposePunch
+          {t.login.loginTo} {t.common.name}
         </h2>
 
         {error && (
@@ -48,53 +50,39 @@ const LoginPage = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-              placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+          <FormField
+            id="email" label={t.login.email} required className="border-gray-700" labelClassName="font-bold"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t.login.emailPlaceholder}
+          />
 
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
-              placeholder="******************"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+          <FormField
+            id="password" label={t.login.password} required className="border-gray-700" labelClassName="font-bold"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={t.login.passwordPlaceholder}
+          />
 
           <div className="flex items-center justify-between flex-col gap-4">
             <button
               type="submit"
               disabled={isSubmitting}
               className={`w-full font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-white
-                ${isSubmitting 
-                  ? 'bg-blue-300 cursor-not-allowed' 
+                ${isSubmitting
+                  ? 'bg-blue-300 cursor-not-allowed'
                   : 'bg-blue-600 hover:bg-blue-700'}`}
             >
-              {isSubmitting ? 'Logging in...' : 'Log In'}
+              {isSubmitting ? t.login.loggingIn : t.login.loginButton}
             </button>
-            
-            <Link 
-              to="/register" 
+
+            <Link
+              to="/register"
               className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
             >
-              Don't have an account? Register
+              {t.login.registerLink}
             </Link>
           </div>
         </form>

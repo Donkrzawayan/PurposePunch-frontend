@@ -7,6 +7,7 @@ interface BaseFieldProps {
   helperText?: string;
   required?: boolean;
   className?: string;
+  labelClassName?: string;
 }
 
 interface InputProps extends BaseFieldProps {
@@ -47,7 +48,7 @@ const getInputClasses = (error?: string | null, className: string = '') => `
 `;
 
 export const FormField = (props: FormFieldProps) => {
-  const { id, label, error, helperText, required } = props;
+  const { id, label, error, helperText, required, labelClassName = "font-medium" } = props;
 
   const renderField = () => {
     switch (props.type) {
@@ -100,8 +101,8 @@ export const FormField = (props: FormFieldProps) => {
   };
 
   return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
+    <div className="mb-4">
+      <label htmlFor={id} className={`block text-sm text-gray-700 mb-1 ${labelClassName || ''}`}>
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       

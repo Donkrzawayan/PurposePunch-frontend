@@ -10,6 +10,17 @@ export const t = {
     community: "Community",
     logout: "Logout"
   },
+  login: {
+    loginButton: "Log in",
+    loginTo: "Log in to ",
+    email: "Email",
+    emailPlaceholder: "name@example.com",
+    password: "Password",
+    passwordPlaceholder: "******************",
+    error: "Login failed",
+    registerLink: "Don't have an account? Register",
+    loggingIn: "Logging in..."
+  },
   decision: {
     description: "Context / Reasoning",
     expectedOutcome: "Expected Outcome",
