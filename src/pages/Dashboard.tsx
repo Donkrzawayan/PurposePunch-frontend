@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { decisionService } from '../api/services';
 import { DecisionStatus, type DecisionDto } from '../types';
 import { Link } from 'react-router-dom';
+import { t } from '../textResources';
 
 const Dashboard = () => {
   const [decisions, setDecisions] = useState<DecisionDto[]>([]);
@@ -15,7 +16,7 @@ const Dashboard = () => {
         setDecisions(data);
       } catch (err) {
         console.error(err);
-        setError('Failed to load decisions.');
+        setError(t.dashboard.error);
       } finally {
         setIsLoading(false);
       }
@@ -29,20 +30,20 @@ const Dashboard = () => {
       case DecisionStatus.Reflected:
         return (
           <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
-            Reflected
+            {t.decision.status.reflected}
           </span>
         );
       case DecisionStatus.Abandoned:
         return (
           <span className="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
-            Abandoned
+            {t.decision.status.abandoned}
           </span>
         );
       case DecisionStatus.Active:
       default:
         return (
           <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-            Active
+            {t.decision.status.active}
           </span>
         );
     }
@@ -51,17 +52,17 @@ const Dashboard = () => {
   const getOngoingDate = (status: DecisionStatus, expectedReflectionDate: string, reflectedAt: string | null) => {
     if (status === DecisionStatus.Reflected && reflectedAt) {
       return (
-        <> Reflected: {new Date(reflectedAt).toLocaleDateString()} </>
+        <> {t.dashboard.reflected} {new Date(reflectedAt).toLocaleDateString()} </>
       );
     }
     return (
-      <> Expected: {new Date(expectedReflectionDate).toLocaleDateString()} </>
+      <> {t.dashboard.expected} {new Date(expectedReflectionDate).toLocaleDateString()} </>
     );
   };
 
 
   if (isLoading) {
-    return <div className="p-8 text-center text-gray-500">Loading your decisions...</div>;
+    return <div className="p-8 text-center text-gray-500">{t.common.loading}</div>;
   }
 
   if (error) {
@@ -71,17 +72,17 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center border-b pb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Your Decisions</h1>
+        <h1 className="text-2xl font-bold text-gray-800">{t.dashboard.title}</h1>
         <Link to="/create" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-          + New Decision
+          {t.dashboard.addDecision}
         </Link>
       </div>
 
       {decisions.length === 0 ? (
         <div className="text-center py-10 bg-white rounded-lg shadow">
-          <p className="text-gray-500 mb-4">You haven't added any decisions yet.</p>
+          <p className="text-gray-500 mb-4">{t.dashboard.noneDecision}</p>
           <Link to="/create" className="text-blue-600 font-bold hover:underline">
-            Make your first decision!
+            {t.dashboard.addFirst}
           </Link>
         </div>
       ) : (
@@ -103,7 +104,7 @@ const Dashboard = () => {
                 </div>
 
                 <Link to={`/decision/${decision.id}`} className="text-blue-600 text-sm font-medium hover:text-blue-800">
-                  Details &rarr;
+                  {t.dashboard.detailsLink}
                 </Link>
               </div>
             </div>

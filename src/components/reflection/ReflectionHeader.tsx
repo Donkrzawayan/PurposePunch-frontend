@@ -16,9 +16,9 @@ export const ReflectionHeader = ({ decision }: Props) => {
 
   const getStatusText = (status: DecisionStatus) => {
     switch (status) {
-      case DecisionStatus.Reflected: return t.reflection.status.reflected;
-      case DecisionStatus.Abandoned: return t.reflection.status.abandoned;
-      default: return t.reflection.status.active;
+      case DecisionStatus.Reflected: return t.decision.status.reflected;
+      case DecisionStatus.Abandoned: return t.decision.status.abandoned;
+      default: return t.decision.status.active;
     }
   };
 

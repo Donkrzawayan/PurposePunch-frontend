@@ -30,6 +30,21 @@ export const t = {
       private: "Private 🔒",
       public: "Public 🌍"
     },
+    status: {
+      active: "Pending",
+      reflected: "Reflected",
+      abandoned: "Abandoned"
+    },
+  },
+  dashboard: {
+    title: "Your Decisions",
+    reflected: "Reflected: ",
+    expected: "Expected: ",
+    addDecision: "+ New Decision",
+    noneDecision: "You haven't added any decisions yet.",
+    addFirst: "Make your first decision!",
+    detailsLink: "Details →",
+    error: 'Failed to load decisions.'
   },
   createDecision: {
     title: "Create new Decision",
@@ -49,11 +64,6 @@ export const t = {
   },
   reflection: {
     pageTitle: "Decision Details",
-    status: {
-      active: "Active / Pending",
-      reflected: "Reflected",
-      abandoned: "Abandoned"
-    },
     phase1: {
       title: "The Plan (Expectations)"
     },
