@@ -1,5 +1,6 @@
 import type { DecisionDto } from '../../types';
 import { t } from '../../textResources';
+import { ReadOnlyField } from '../common/ReadOnlyField';
 
 interface Props {
   decision: DecisionDto;
@@ -12,14 +13,12 @@ export const Phase1 = ({ decision }: Props) => {
         {t.reflection.phase1.title}
       </h2>
       <div className="space-y-4">
-        <div>
-          <h3 className="text-sm font-semibold text-gray-500 uppercase">{t.decision.description}</h3>
-          <p className="text-gray-800 mt-1 whitespace-pre-wrap">{decision.description}</p>
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-gray-500 uppercase">{t.decision.expectedOutcome}</h3>
-          <p className="text-gray-800 mt-1 whitespace-pre-wrap">{decision.expectedOutcome}</p>
-        </div>
+        <ReadOnlyField label={t.decision.description}>
+          {decision.description}
+        </ReadOnlyField>
+        <ReadOnlyField label={t.decision.expectedOutcome}>
+          {decision.expectedOutcome}
+        </ReadOnlyField>
       </div>
     </div>
   );

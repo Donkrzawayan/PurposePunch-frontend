@@ -1,5 +1,6 @@
-import { type DecisionDto } from '../../types';
+import type { DecisionDto } from '../../types';
 import { t } from '../../textResources';
+import { ReadOnlyField } from '../common/ReadOnlyField';
 
 interface Props {
   decision: DecisionDto;
@@ -22,7 +23,7 @@ export const Phase2Result = ({ decision }: Props) => {
         {t.reflection.phase2.title}
       </h2>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {decision.reflectedAt && (
           <div className="text-sm border-b pb-2 mb-2">
             <span className="text-gray-500 mr-2">{t.reflection.phase2.reflectedAtLabel}</span>
@@ -35,27 +36,25 @@ export const Phase2Result = ({ decision }: Props) => {
           </div>
         )}
 
-        <div>
-          <h3 className="text-sm font-semibold uppercase opacity-75">{t.reflection.phase2.actualOutcomeLabel}</h3>
-          <p className="text-gray-900 mt-1 whitespace-pre-wrap">{decision.actualOutcome}</p>
-        </div>
+        <ReadOnlyField label={t.reflection.phase2.actualOutcomeLabel}>
+          {decision.actualOutcome}
+        </ReadOnlyField>
 
-        <div>
-          <h3 className="text-sm font-semibold uppercase opacity-75">{t.reflection.phase2.lessonsLabel}</h3>
-          <p className={`mt-1 whitespace-pre-wrap ${!decision.lessonsLearned ? 'italic text-gray-600' : 'text-gray-900'}`}>
-            {decision.lessonsLearned || t.reflection.phase2.missingLessons}
-          </p>
-        </div>
+        <ReadOnlyField label={t.reflection.phase2.lessonsLabel}
+          contentClassName={!decision.lessonsLearned ? 'italic text-gray-600' : ''}
+        >
+          {decision.lessonsLearned || t.reflection.phase2.missingLessons}
+        </ReadOnlyField>
 
-        <div>
-          <h3 className="text-sm font-semibold uppercase opacity-75">{t.reflection.phase2.satisfactionLabel}</h3>
-          <p className="text-xl mt-1 font-bold">{renderSatisfactionText(decision.satisfaction)}</p>
-        </div>
+        <ReadOnlyField label={t.reflection.phase2.satisfactionLabel} contentClassName="text-xl font-bold">
+          {renderSatisfactionText(decision.satisfaction)}
+        </ReadOnlyField>
 
         {decision.privateNotes && (
           <div className="mt-6 p-4 bg-white/60 rounded border border-gray-200">
-            <h3 className="text-xs font-bold text-gray-400 uppercase mb-1">{t.reflection.phase2.privateNotesLabel}</h3>
-            <p className="text-gray-600 italic text-sm">{decision.privateNotes}</p>
+             <ReadOnlyField label={t.reflection.phase2.privateNotesLabel} contentClassName="italic text-gray-600 text-sm">
+                {decision.privateNotes}
+             </ReadOnlyField>
           </div>
         )}
       </div>
