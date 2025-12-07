@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { decisionService } from '../api/services';
-import { type CreateDecisionCommand, Visibility, type ProblemDetails } from '../types';
+import { type CreateDecisionCommand, Visibility } from '../types';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
+import { getErrorMessage } from '../utils/errorUtils';
 
 const CreateDecision = () => {
   const navigate = useNavigate();
@@ -47,14 +47,7 @@ const CreateDecision = () => {
       navigate('/');
       
     } catch (err) {
-      console.error(err);
-      
-      if (axios.isAxiosError(err) && err.response?.data) {
-         const problem = err.response.data as ProblemDetails;
-         setError(problem.detail || t.createDecision.errors.createFailed);
-      } else {
-        setError(t.common.networkError);
-      }
+      setError(getErrorMessage(err, t.createDecision.errors.createFailed));
     } finally {
       setIsSubmitting(false);
     }

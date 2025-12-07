@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { decisionService } from '../api/services';
-import { type DecisionDto, DecisionStatus, type UpdateDecisionCommand, type ProblemDetails } from '../types';
+import { type DecisionDto, DecisionStatus, type UpdateDecisionCommand } from '../types';
 import { t } from '../textResources';
 import { ReflectionHeader } from '../components/reflection/ReflectionHeader';
 import { Phase1 } from '../components/reflection/Phase1';
 import { Phase2Result } from '../components/reflection/Phase2Result';
 import { Phase2Form, type ReflectionFormData } from '../components/reflection/Phase2Form';
+import { getErrorMessage } from '../utils/errorUtils';
 
 const ReflectionPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -58,12 +58,7 @@ const ReflectionPage = () => {
 
       window.location.reload();
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.data) {
-        const problem = err.response.data as ProblemDetails;
-        setError(problem.detail || t.reflection.errors.updateFailed);
-      } else {
-        setError(t.common.networkError);
-      }
+      setError(getErrorMessage(err, t.reflection.errors.updateFailed));
     } finally {
       setIsSubmitting(false);
     }

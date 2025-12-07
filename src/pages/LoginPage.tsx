@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import type { ProblemDetails } from '../types';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
+import { getErrorMessage } from '../utils/errorUtils';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -24,13 +23,7 @@ const LoginPage = () => {
       await login({ email, password });
       navigate('/');
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.data) {
-        const data = err.response.data as ProblemDetails;
-        setError(data.detail || data.title || t.login.error);
-      } else {
-        setError(t.common.networkError);
-      }
-      console.error(err);
+      setError(getErrorMessage(err, t.login.error));
     } finally {
       setIsSubmitting(false);
     }

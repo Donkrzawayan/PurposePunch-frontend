@@ -3,6 +3,7 @@ import { decisionService } from '../api/services';
 import { DecisionStatus, type DecisionDto } from '../types';
 import { Link } from 'react-router-dom';
 import { t } from '../textResources';
+import { getErrorMessage } from '../utils/errorUtils';
 
 const Dashboard = () => {
   const [decisions, setDecisions] = useState<DecisionDto[]>([]);
@@ -15,8 +16,7 @@ const Dashboard = () => {
         const data = await decisionService.getAll();
         setDecisions(data);
       } catch (err) {
-        console.error(err);
-        setError(t.dashboard.error);
+        setError(getErrorMessage(err, t.dashboard.error));
       } finally {
         setIsLoading(false);
       }
