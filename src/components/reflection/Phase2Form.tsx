@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DecisionStatus, SatisfactionScale, Visibility } from '../../types';
 import { t } from '../../textResources';
 import { FormField } from '../common/FormField';
+import { PhaseHeader } from './PhaseHeader';
 
 interface Props {
   status: DecisionStatus;
@@ -58,9 +59,7 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
 
   return (
     <div className="p-6 rounded-lg border bg-white border-blue-200 shadow-md">
-      <h2 className={`text-xl font-bold mb-4 border-b pb-2 ${getTitleColor()}`}>
-        {t.reflection.phase2.title}
-      </h2>
+      <PhaseHeader title={t.reflection.phase2.title} className={getTitleColor()} />
 
       <div className="space-y-6">
         <p className="text-sm text-gray-600 mb-4 italic">{t.reflection.phase2.formTitle}</p>

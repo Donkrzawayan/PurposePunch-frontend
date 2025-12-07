@@ -1,6 +1,7 @@
 import type { DecisionDto } from '../../types';
 import { t } from '../../textResources';
 import { ReadOnlyField } from '../common/ReadOnlyField';
+import { PhaseHeader } from './PhaseHeader';
 
 interface Props {
   decision: DecisionDto;
@@ -19,9 +20,7 @@ export const Phase2Result = ({ decision }: Props) => {
 
   return (
     <div className="p-6 rounded-lg border bg-green-50 border-green-200">
-      <h2 className="text-xl font-bold mb-4 border-b pb-2 text-green-800">
-        {t.reflection.phase2.title}
-      </h2>
+      <PhaseHeader title={t.reflection.phase2.title} className="text-green-800" />
 
       <div className="space-y-6">
         {decision.reflectedAt && (
