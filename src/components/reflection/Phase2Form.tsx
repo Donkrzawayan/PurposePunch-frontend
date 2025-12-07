@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DecisionStatus, SatisfactionScale, Visibility } from '../../types';
 import { t } from '../../textResources';
+import { FormField } from '../common/FormField';
 
 interface Props {
   status: DecisionStatus;
@@ -37,12 +38,12 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
 
   const validateAndSubmit = (shouldPublish: boolean) => {
     if (!actualOutcome.trim()) {
-      setValidationError("Actual Outcome is required.");
+      setValidationError(t.reflection.errors.missingOutcome);
       return;
     }
 
     if (satisfaction === null) {
-      setValidationError("Please rate your satisfaction.");
+      setValidationError(t.reflection.errors.missingSatisfaction);
       return;
     }
 
@@ -70,37 +71,26 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
           </div>
         )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t.reflection.phase2.actualOutcomeLabel} <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            required
-            rows={4}
-            className={`w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500
-              ${validationError && !actualOutcome.trim() ? 'border-red-500 bg-red-50' : 'border-gray-300'}
-            `}
-            placeholder={t.reflection.phase2.actualOutcomePlaceholder}
-            value={actualOutcome}
-            onChange={(e) => {
-              setActualOutcome(e.target.value);
-              if (validationError) setValidationError(null);
-            }}
-          />
-        </div>
+        <FormField
+          id="outcome" label={t.reflection.phase2.actualOutcomeLabel} error={!actualOutcome.trim() ? validationError : null} required
+          type="textarea"
+          value={actualOutcome}
+          onChange={(e) => {
+            setActualOutcome(e.target.value);
+            if (validationError) setValidationError(null);
+          }}
+          placeholder={t.reflection.phase2.actualOutcomePlaceholder}
+          rows={4}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t.reflection.phase2.lessonsLabel}
-          </label>
-          <textarea
-            rows={3}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
-            placeholder={t.reflection.phase2.lessonsPlaceholder}
-            value={lessonsLearned}
-            onChange={(e) => setLessonsLearned(e.target.value)}
-          />
-        </div>
+        <FormField
+          id="lessonsLearned" label={t.reflection.phase2.lessonsLabel}
+          type="textarea"
+          value={lessonsLearned}
+          onChange={(e) => setLessonsLearned(e.target.value)}
+          placeholder={t.reflection.phase2.lessonsPlaceholder}
+          rows={3}
+        />
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -140,18 +130,14 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t.reflection.phase2.privateNotesLabel}
-          </label>
-          <textarea
-            rows={2}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 bg-yellow-50"
-            placeholder={t.reflection.phase2.privateNotesPlaceholder}
-            value={privateNotes}
-            onChange={(e) => setPrivateNotes(e.target.value)}
-          />
-        </div>
+        <FormField
+          id="privateNotes" label={t.reflection.phase2.privateNotesLabel} className="bg-yellow-50"
+          type="textarea"
+          value={privateNotes}
+          onChange={(e) => setPrivateNotes(e.target.value)}
+          placeholder={t.reflection.phase2.privateNotesPlaceholder}
+          rows={2}
+        />
 
         <div className="pt-4 flex flex-col gap-3">
           {visibility === Visibility.Public && (

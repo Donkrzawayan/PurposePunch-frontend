@@ -4,6 +4,7 @@ import axios from 'axios';
 import { decisionService } from '../api/services';
 import { type CreateDecisionCommand, Visibility, type ProblemDetails } from '../types';
 import { t } from '../textResources';
+import { FormField } from '../components/common/FormField';
 
 const CreateDecision = () => {
   const navigate = useNavigate();
@@ -72,84 +73,54 @@ const CreateDecision = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-              {t.createDecision.form.titleLabel} <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="title"
-              type="text"
-              required
-              maxLength={60}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder={t.createDecision.form.titlePlaceholder}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
+          <FormField
+            id="title" label={t.createDecision.form.titleLabel} required
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder={t.createDecision.form.titlePlaceholder}
+            maxLength={60}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            <div>
-              <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
-                {t.createDecision.form.dateLabel} <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="date"
-                type="datetime-local"
-                required
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={reflectionDate}
-                onChange={(e) => setReflectionDate(e.target.value)}
-              />
-              <p className="text-xs text-gray-500 mt-1">{t.createDecision.form.dateHelp}</p>
-            </div>
-
-            <div>
-              <label htmlFor="visibility" className="block text-sm font-medium text-gray-700 mb-1">
-                {t.createDecision.form.visibilityLabel}
-              </label>
-              <select
-                id="visibility"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={visibility}
-                onChange={(e) => setVisibility(Number(e.target.value) as Visibility)}
-              >
-                <option value={Visibility.Private}>{t.createDecision.form.visibilityOptions.private}</option>
-                <option value={Visibility.Public}>{t.createDecision.form.visibilityOptions.public}</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-              {t.createDecision.form.descriptionLabel} <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="description"
-              required
-              rows={4}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder={t.createDecision.form.descriptionPlaceholder}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+            <FormField
+              id="date" label={t.decision.expectedReflectionDate} required helperText={t.createDecision.form.dateHelp}
+              type="datetime-local"
+              value={reflectionDate}
+              onChange={(e) => setReflectionDate(e.target.value)}
             />
+
+            <FormField
+              id="visibility" label={t.decision.visibility.label} required
+              type="select"
+              value={visibility}
+              onChange={(e) => setVisibility(Number(e.target.value) as Visibility)}
+              options={[
+                { value: Visibility.Private, label: t.decision.visibility.private },
+                { value: Visibility.Public, label: t.decision.visibility.public }
+              ]}
+            />
+            
           </div>
 
-          <div>
-            <label htmlFor="outcome" className="block text-sm font-medium text-gray-700 mb-1">
-              {t.createDecision.form.outcomeLabel} <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="outcome"
-              required
-              rows={3}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder={t.createDecision.form.outcomePlaceholder}
-              value={expectedOutcome}
-              onChange={(e) => setExpectedOutcome(e.target.value)}
-            />
-          </div>
+          <FormField
+            id="description" label={t.decision.description} required
+            type="textarea"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder={t.createDecision.form.descriptionPlaceholder}
+            rows={4}
+          />
+
+          <FormField
+            id="outcome" label={t.decision.expectedOutcome} required
+            type="textarea"
+            value={expectedOutcome}
+            onChange={(e) => setExpectedOutcome(e.target.value)}
+            placeholder={t.createDecision.form.outcomePlaceholder}
+            rows={3}
+          />
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
             <button

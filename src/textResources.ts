@@ -67,7 +67,9 @@ export const t = {
     },
     errors: {
       updateFailed: "Update failed",
-      missingDecision: "Decision not found"
+      missingDecision: "Decision not found",
+      missingOutcome: "Actual Outcome is required",
+      missingSatisfaction: "Please rate your satisfaction."
     },
     satisfaction: {
       0: "Very Dissatisfied 😡",
