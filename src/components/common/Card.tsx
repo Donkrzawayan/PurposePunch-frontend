@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '../../utils/cn';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement>{
   children: React.ReactNode;
@@ -6,11 +7,14 @@ interface Props extends React.HTMLAttributes<HTMLDivElement>{
 }
 
 export const Card = ({ children, className = '', ...props }: Props) => {
-  const baseClasses = "p-6 rounded-lg border transition-all";
-  const defaultColor = className.includes('bg-') ? '' : 'bg-white border-gray-200 shadow-sm';
-
   return (
-    <div className={`${baseClasses} ${defaultColor} ${className}`} {...props}>
+    <div
+      className={cn(
+        "bg-white p-6 rounded-lg border border-gray-200 shadow-sm transition-all",
+        className
+      )}
+      {...props}
+    >
       {children}
     </div>
   );

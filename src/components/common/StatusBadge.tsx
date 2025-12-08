@@ -1,12 +1,13 @@
 import { DecisionStatus } from '../../types';
 import { t } from '../../textResources';
+import { cn } from '../../utils/cn';
 
 interface Props {
   status: DecisionStatus;
   className?: string;
 }
 
-export const StatusBadge = ({ status, className = 'text-sm' }: Props) => {
+export const StatusBadge = ({ status, className = '' }: Props) => {
   const config = {
     [DecisionStatus.Reflected]: {
       text: t.decision.status.reflected,
@@ -24,7 +25,11 @@ export const StatusBadge = ({ status, className = 'text-sm' }: Props) => {
 
   const current = config[status] || config[DecisionStatus.Active];
   return (
-    <span className={`inline-flex items-center px-3 py-1 rounded-full font-medium border ${current.style} ${className}`}>
+    <span className={cn(
+      "inline-flex items-center px-3 py-1 rounded-full font-medium text-sm border",
+      current.style,
+      className)}
+    >
       {current.text}
     </span>
   );

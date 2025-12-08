@@ -1,5 +1,6 @@
 import React from 'react';
 import { t } from '../../textResources';
+import { cn } from '../../utils/cn';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -40,7 +41,7 @@ export const Button = ({
   return (
     <button
       disabled={isLoading || disabled}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={cn(baseStyles, variants[variant], sizes[size], className)}
       {...props}
     >
       {isLoading ? (
