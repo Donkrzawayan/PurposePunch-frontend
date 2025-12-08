@@ -4,6 +4,7 @@ import { DecisionStatus, type DecisionDto } from '../types';
 import { Link } from 'react-router-dom';
 import { t } from '../textResources';
 import { getErrorMessage } from '../utils/errorUtils';
+import { StatusBadge } from '../components/common/StatusBadge';
 
 const Dashboard = () => {
   const [decisions, setDecisions] = useState<DecisionDto[]>([]);
@@ -24,30 +25,6 @@ const Dashboard = () => {
 
     fetchDecisions();
   }, []);
-
-  const getStatusBadge = (status: DecisionStatus) => {
-    switch (status) {
-      case DecisionStatus.Reflected:
-        return (
-          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
-            {t.decision.status.reflected}
-          </span>
-        );
-      case DecisionStatus.Abandoned:
-        return (
-          <span className="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
-            {t.decision.status.abandoned}
-          </span>
-        );
-      case DecisionStatus.Active:
-      default:
-        return (
-          <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-            {t.decision.status.active}
-          </span>
-        );
-    }
-  };
 
   const getOngoingDate = (status: DecisionStatus, expectedReflectionDate: string, reflectedAt: string | null) => {
     if (status === DecisionStatus.Reflected && reflectedAt) {
@@ -91,7 +68,7 @@ const Dashboard = () => {
             <div key={decision.id} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition border border-gray-100">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-lg text-gray-800">{decision.title}</h3>
-                {getStatusBadge(decision.status)}
+                <StatusBadge status={decision.status} className="text-xs" />
               </div>
 
               <p className="text-gray-600 text-sm mb-4 line-clamp-3">
