@@ -8,6 +8,7 @@ import { Phase1 } from '../components/reflection/Phase1';
 import { Phase2Result } from '../components/reflection/Phase2Result';
 import { Phase2Form, type ReflectionFormData } from '../components/reflection/Phase2Form';
 import { getErrorMessage } from '../utils/errorUtils';
+import { PageContainer } from '../components/layout/PageContainer';
 
 const ReflectionPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -71,12 +72,10 @@ const ReflectionPage = () => {
   const isReadOnly = decision.status === DecisionStatus.Reflected;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12">
-
+    <PageContainer className="max-w-4xl">
       <ReflectionHeader decision={decision} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
         <Phase1 decision={decision} />
 
         {isReadOnly ? (
@@ -90,7 +89,7 @@ const ReflectionPage = () => {
           />
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

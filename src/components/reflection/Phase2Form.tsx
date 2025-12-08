@@ -4,6 +4,7 @@ import { t } from '../../textResources';
 import { FormField } from '../common/FormField';
 import { PhaseHeader } from './PhaseHeader';
 import { Button } from '../common/Button';
+import { Card } from '../common/Card';
 
 interface Props {
   status: DecisionStatus;
@@ -59,7 +60,7 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
   };
 
   return (
-    <div className="p-6 rounded-lg border bg-white border-blue-200 shadow-md">
+    <Card className="bg-white border-blue-200 shadow-md">
       <PhaseHeader title={t.reflection.phase2.title} className={getTitleColor()} />
 
       <div className="space-y-6">
@@ -163,6 +164,6 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
           </Button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };

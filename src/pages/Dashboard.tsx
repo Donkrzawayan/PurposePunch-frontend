@@ -6,6 +6,8 @@ import { t } from '../textResources';
 import { getErrorMessage } from '../utils/errorUtils';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { Button } from '../components/common/Button';
+import { Card } from '../components/common/Card';
+import { PageContainer } from '../components/layout/PageContainer';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -49,7 +51,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       <div className="flex justify-between items-center border-b pb-4">
         <h1 className="text-2xl font-bold text-gray-800">{t.dashboard.title}</h1>
         <Button
@@ -62,16 +64,16 @@ const Dashboard = () => {
       </div>
 
       {decisions.length === 0 ? (
-        <div className="text-center py-10 bg-white rounded-lg shadow">
+        <Card className="text-center">
           <p className="text-gray-500 mb-4">{t.dashboard.noneDecision}</p>
           <Link to="/create" className="text-blue-600 font-bold hover:underline">
             {t.dashboard.addFirst}
           </Link>
-        </div>
+        </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {decisions.map((decision) => (
-            <div key={decision.id} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition border border-gray-100">
+            <Card key={decision.id} className="hover:shadow-md relative">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-lg text-gray-800">{decision.title}</h3>
                 <StatusBadge status={decision.status} className="text-xs" />
@@ -90,11 +92,11 @@ const Dashboard = () => {
                   {t.dashboard.detailsLink}
                 </Link>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

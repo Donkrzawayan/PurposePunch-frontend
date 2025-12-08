@@ -6,6 +6,8 @@ import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
 import { getErrorMessage } from '../utils/errorUtils';
 import { Button } from '../components/common/Button';
+import { Card } from '../components/common/Card';
+import { PageContainer } from '../components/layout/PageContainer';
 
 const CreateDecision = () => {
   const navigate = useNavigate();
@@ -55,8 +57,8 @@ const CreateDecision = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+    <PageContainer className="max-w-2xl">
+      <Card>
         <h1 className="text-2xl font-bold text-gray-800 mb-6">{t.createDecision.title}</h1>
 
         {error && (
@@ -134,8 +136,8 @@ const CreateDecision = () => {
           </div>
 
         </form>
-      </div>
-    </div>
+      </Card>
+    </PageContainer>
   );
 };
 

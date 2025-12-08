@@ -5,6 +5,7 @@ import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
 import { getErrorMessage } from '../utils/errorUtils';
 import { Button } from '../components/common/Button';
+import { Card } from '../components/common/Card';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -32,7 +33,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <Card className="bg-white border-transparent shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           {t.login.loginTo} {t.common.name}
         </h2>
@@ -45,7 +46,7 @@ const LoginPage = () => {
 
         <form onSubmit={handleSubmit}>
           <FormField
-            id="email" label={t.login.email} required className="border-gray-700" labelClassName="font-bold"
+            id="email" label={t.login.email} required className="border-gray-500" labelClassName="font-bold"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -53,7 +54,7 @@ const LoginPage = () => {
           />
 
           <FormField
-            id="password" label={t.login.password} required className="border-gray-700" labelClassName="font-bold"
+            id="password" label={t.login.password} required className="border-gray-500" labelClassName="font-bold"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -79,7 +80,7 @@ const LoginPage = () => {
             </Link>
           </div>
         </form>
-      </div>
+      </Card>
     </div>
   );
 };

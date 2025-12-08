@@ -2,6 +2,7 @@ import type { DecisionDto } from '../../types';
 import { t } from '../../textResources';
 import { ReadOnlyField } from '../common/ReadOnlyField';
 import { PhaseHeader } from './PhaseHeader';
+import { Card } from '../common/Card';
 
 interface Props {
   decision: DecisionDto;
@@ -19,7 +20,7 @@ export const Phase2Result = ({ decision }: Props) => {
   };
 
   return (
-    <div className="p-6 rounded-lg border bg-green-50 border-green-200">
+    <Card className="bg-green-50 border-green-200">
       <PhaseHeader title={t.reflection.phase2.title} className="text-green-800" />
 
       <div className="space-y-6">
@@ -51,12 +52,12 @@ export const Phase2Result = ({ decision }: Props) => {
 
         {decision.privateNotes && (
           <div className="mt-6 p-4 bg-white/60 rounded border border-gray-200">
-             <ReadOnlyField label={t.reflection.phase2.privateNotesLabel} contentClassName="italic text-gray-600 text-sm">
-                {decision.privateNotes}
-             </ReadOnlyField>
+            <ReadOnlyField label={t.reflection.phase2.privateNotesLabel} contentClassName="italic text-gray-600 text-sm">
+              {decision.privateNotes}
+            </ReadOnlyField>
           </div>
         )}
       </div>
-    </div>
+    </Card>
   );
 };
