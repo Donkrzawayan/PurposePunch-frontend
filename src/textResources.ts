@@ -54,8 +54,7 @@ export const t = {
       dateHelp: "When do you want to verify the results?",
       descriptionPlaceholder: "Why are you making this decision?",
       outcomePlaceholder: "What will success look like on the reflection date?",
-      submitButton: "Submit Decision!",
-      submittingButton: "Submitting..."
+      submitButton: "Submit Decision!"
     },
     errors: {
       createFailed: "Failed to create decision.",

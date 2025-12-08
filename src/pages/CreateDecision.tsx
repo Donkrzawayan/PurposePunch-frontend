@@ -5,10 +5,11 @@ import { type CreateDecisionCommand, Visibility } from '../types';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
 import { getErrorMessage } from '../utils/errorUtils';
+import { Button } from '../components/common/Button';
 
 const CreateDecision = () => {
   const navigate = useNavigate();
-  
+
   const defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 1);
 
@@ -40,12 +41,12 @@ const CreateDecision = () => {
         description,
         expectedOutcome,
         visibility,
-        expectedReflectionDate: new Date(reflectionDate).toISOString() 
+        expectedReflectionDate: new Date(reflectionDate).toISOString()
       };
 
       await decisionService.create(command);
       navigate('/');
-      
+
     } catch (err) {
       setError(getErrorMessage(err, t.createDecision.errors.createFailed));
     } finally {
@@ -57,7 +58,7 @@ const CreateDecision = () => {
     <div className="max-w-2xl mx-auto">
       <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">{t.createDecision.title}</h1>
-        
+
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded mb-6 text-sm border border-red-200">
             {error}
@@ -65,7 +66,7 @@ const CreateDecision = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          
+
           <FormField
             id="title" label={t.createDecision.form.titleLabel} required
             type="text"
@@ -76,7 +77,7 @@ const CreateDecision = () => {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             <FormField
               id="date" label={t.decision.expectedReflectionDate} required helperText={t.createDecision.form.dateHelp}
               type="datetime-local"
@@ -94,7 +95,7 @@ const CreateDecision = () => {
                 { value: Visibility.Public, label: t.decision.visibility.public }
               ]}
             />
-            
+
           </div>
 
           <FormField
@@ -116,23 +117,20 @@ const CreateDecision = () => {
           />
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-            <button
-              type="button"
+            <Button
+              variant="secondary"
               onClick={() => navigate('/')}
-              className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition"
             >
               {t.common.cancel}
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="primary"
+              isLoading={isSubmitting}
               disabled={isSubmitting}
-              className={`px-4 py-2 text-white font-bold rounded-md transition
-                ${isSubmitting 
-                  ? 'bg-blue-400 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg'}`}
             >
-              {isSubmitting ? t.createDecision.form.submittingButton : t.createDecision.form.submitButton}
-            </button>
+              {t.createDecision.form.submitButton}
+            </Button>
           </div>
 
         </form>

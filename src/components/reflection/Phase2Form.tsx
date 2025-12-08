@@ -3,6 +3,7 @@ import { DecisionStatus, SatisfactionScale, Visibility } from '../../types';
 import { t } from '../../textResources';
 import { FormField } from '../common/FormField';
 import { PhaseHeader } from './PhaseHeader';
+import { Button } from '../common/Button';
 
 interface Props {
   status: DecisionStatus;
@@ -140,24 +141,26 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
 
         <div className="pt-4 flex flex-col gap-3">
           {visibility === Visibility.Public && (
-            <button
-              type="button"
-              disabled={isSubmitting}
+            <Button
+              variant="primary"
+              size="lg"
+              isLoading={isSubmitting}
               onClick={() => validateAndSubmit(true)}
-              className="w-full bg-blue-600 text-white font-bold py-3 rounded-md hover:bg-blue-700 transition shadow-md hover:shadow-lg flex justify-center items-center gap-2"
+              disabled={isSubmitting}
             >
-              {isSubmitting ? t.common.loading : t.reflection.phase2.confirmPublish}
-            </button>
+              {t.reflection.phase2.confirmPublish}
+            </Button>
           )}
 
-          <button
-            type="button"
-            disabled={isSubmitting}
+          <Button
+            variant="secondary"
+            size="sm"
+            isLoading={isSubmitting}
             onClick={() => validateAndSubmit(false)}
-            className="w-full bg-white text-gray-700 border border-gray-300 font-medium py-2 rounded-md hover:bg-gray-50 transition text-sm"
+            disabled={isSubmitting}
           >
             {t.reflection.phase2.onlyConfirm}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

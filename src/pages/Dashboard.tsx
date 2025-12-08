@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { decisionService } from '../api/services';
 import { DecisionStatus, type DecisionDto } from '../types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { t } from '../textResources';
 import { getErrorMessage } from '../utils/errorUtils';
 import { StatusBadge } from '../components/common/StatusBadge';
+import { Button } from '../components/common/Button';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [decisions, setDecisions] = useState<DecisionDto[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,9 +52,13 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center border-b pb-4">
         <h1 className="text-2xl font-bold text-gray-800">{t.dashboard.title}</h1>
-        <Link to="/create" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => navigate('/create')}
+        >
           {t.dashboard.addDecision}
-        </Link>
+        </Button>
       </div>
 
       {decisions.length === 0 ? (

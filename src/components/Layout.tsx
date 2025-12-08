@@ -2,6 +2,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NavbarLink } from './NavbarLink';
 import { t } from '../textResources';
+import { Button } from './common/Button';
 
 const Layout = () => {
   const { logout } = useAuth();
@@ -27,12 +28,13 @@ const Layout = () => {
               </div>
             </div>
             <div className="flex items-center">
-              <button
+              <Button
+                variant="danger"
+                size="sm"
                 onClick={handleLogout}
-                className="ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none"
               >
                 {t.layout.logout}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

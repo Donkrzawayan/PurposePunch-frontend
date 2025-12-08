@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
 import { getErrorMessage } from '../utils/errorUtils';
+import { Button } from '../components/common/Button';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -59,21 +60,20 @@ const LoginPage = () => {
             placeholder={t.login.passwordPlaceholder}
           />
 
-          <div className="flex items-center justify-between flex-col gap-4">
-            <button
+          <div className="w-full flex justify-between flex-col gap-4">
+            <Button
               type="submit"
+              variant="primary"
+              isLoading={isSubmitting}
               disabled={isSubmitting}
-              className={`w-full font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-white
-                ${isSubmitting
-                  ? 'bg-blue-300 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700'}`}
+              loadingText={t.login.loggingIn}
             >
-              {isSubmitting ? t.login.loggingIn : t.login.loginButton}
-            </button>
+              {t.login.loginButton}
+            </Button>
 
             <Link
               to="/register"
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              className="text-center font-bold text-sm text-blue-500 hover:text-blue-800"
             >
               {t.login.registerLink}
             </Link>
