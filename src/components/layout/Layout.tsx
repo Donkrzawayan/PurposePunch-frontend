@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { NavbarLink } from './NavbarLink';
-import { t } from '../textResources';
-import { Button } from './common/Button';
+import { t } from '../../textResources';
+import { Button } from '../common/Button';
 
 const Layout = () => {
   const { logout } = useAuth();

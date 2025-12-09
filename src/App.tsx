@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import PrivateRoute from './components/PrivateRoute';
-import Layout from './components/Layout';
+import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
 import CreateDecision from './pages/CreateDecision';
 import ReflectionPage from './pages/ReflectionPage';
