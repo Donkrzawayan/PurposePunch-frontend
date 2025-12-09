@@ -10,6 +10,18 @@ export const t = {
     community: "Community",
     logout: "Logout"
   },
+  register: {
+    title: "Join PurposePunch",
+    passwordPlaceholder: "Create a strong password",
+    confirmPassword: "Confirm Password",
+    confirmPasswordPlaceholder: "Repeat your password",
+    submitButton: "Create Account",
+    loginLink: "Already have an account? Log In",
+    errors: {
+      failed: "Registration failed",
+      passwordMismatch: "Passwords do not match"
+    }
+  },
   login: {
     loginButton: "Log in",
     loginTo: "Log in to ",
