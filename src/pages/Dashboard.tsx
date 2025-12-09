@@ -8,6 +8,7 @@ import { StatusBadge } from '../components/common/StatusBadge';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { PageContainer } from '../components/layout/PageContainer';
+import { Alert } from '../components/common/Alert';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const Dashboard = () => {
   }
 
   if (error) {
-    return <div className="p-8 text-center text-red-500">{error}</div>;
+    return <Alert message={error} />;
   }
 
   return (

@@ -8,6 +8,7 @@ import { getErrorMessage } from '../utils/errorUtils';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { PageContainer } from '../components/layout/PageContainer';
+import { Alert } from '../components/common/Alert';
 
 const CreateDecision = () => {
   const navigate = useNavigate();
@@ -61,11 +62,7 @@ const CreateDecision = () => {
       <Card>
         <h1 className="text-2xl font-bold text-gray-800 mb-6">{t.createDecision.title}</h1>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded mb-6 text-sm border border-red-200">
-            {error}
-          </div>
-        )}
+        <Alert message={error} />
 
         <form onSubmit={handleSubmit} className="space-y-6">
 

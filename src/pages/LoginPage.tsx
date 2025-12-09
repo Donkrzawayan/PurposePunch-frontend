@@ -6,6 +6,7 @@ import { FormField } from '../components/common/FormField';
 import { getErrorMessage } from '../utils/errorUtils';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
+import { Alert } from '../components/common/Alert';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -33,16 +34,12 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="bg-white border-transparent shadow-md w-full max-w-md">
+      <Card className="border-transparent shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           {t.login.loginTo} {t.common.name}
         </h2>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
+        <Alert message={error} />
 
         <form onSubmit={handleSubmit}>
           <FormField

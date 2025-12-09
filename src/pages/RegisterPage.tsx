@@ -7,6 +7,7 @@ import { Button } from '../components/common/Button';
 import { t } from '../textResources';
 import { getErrorMessage } from '../utils/errorUtils';
 import { Card } from '../components/common/Card';
+import { Alert } from '../components/common/Alert';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -53,11 +54,7 @@ const RegisterPage = () => {
           {t.register.title}
         </h2>
 
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm">
-            {error}
-          </div>
-        )}
+        <Alert message={error} />
 
         <form onSubmit={handleSubmit}>
 

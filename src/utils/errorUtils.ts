@@ -6,6 +6,11 @@ export const getErrorMessage = (error: unknown, fallbackMessage: string = "Opera
   if (axios.isAxiosError(error)) {
     if (error.response?.data) {
       const problem = error.response.data as ProblemDetails;
+
+      if (problem.errors && Object.keys(problem.errors).length > 0) {
+        return Object.values(problem.errors).flat().join('\n');
+      }
+
       return problem.detail || problem.title || fallbackMessage;
     }
     return t.common.networkError;

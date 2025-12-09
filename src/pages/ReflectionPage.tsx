@@ -9,6 +9,7 @@ import { Phase2Result } from '../components/reflection/Phase2Result';
 import { Phase2Form, type ReflectionFormData } from '../components/reflection/Phase2Form';
 import { getErrorMessage } from '../utils/errorUtils';
 import { PageContainer } from '../components/layout/PageContainer';
+import { Alert } from '../components/common/Alert';
 
 const ReflectionPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -66,7 +67,7 @@ const ReflectionPage = () => {
   };
 
   if (loading) return <div className="p-8 text-center">{t.common.loading}</div>;
-  if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
+  if (error) return <Alert message={error} />;
   if (!decision) return <div className="p-8 text-center">{t.reflection.errors.missingDecision}</div>;
 
   const isReadOnly = decision.status === DecisionStatus.Reflected;

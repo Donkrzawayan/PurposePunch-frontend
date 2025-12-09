@@ -70,7 +70,7 @@ export interface DecisionDto {
   createdAt: string;
   expectedReflectionDate: string;
   status: DecisionStatus;
-  
+
   // PHASE 2: Reflection
   actualOutcome: string | null;
   lessonsLearned: string | null;
@@ -109,5 +109,6 @@ export interface ProblemDetails {
   status?: number;
   detail?: string;
   instance?: string;
+  errors?: Record<string, string[]>;
   [key: string]: any;
 }
