@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
 import { getErrorMessage } from '../utils/errorUtils';
-import { Button } from '../components/common/Button';
-import { Card } from '../components/common/Card';
-import { Alert } from '../components/common/Alert';
+import { AuthLayout } from '../components/layout/AuthLayout';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -33,52 +31,31 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="border-transparent shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          {t.login.loginTo} {t.common.name}
-        </h2>
+    <AuthLayout
+      title={`${t.login.loginTo} ${t.common.name}`}
+      error={error}
+      isSubmitting={isSubmitting}
+      onSubmit={handleSubmit}
+      submitButtonText={t.login.loginButton}
+      footerLinkText={t.login.registerLink}
+      footerLinkTo="/register"
+    >
+      <FormField
+        id="email" label={t.login.email} required labelClassName="font-bold"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder={t.login.emailPlaceholder}
+      />
 
-        <Alert message={error} />
-
-        <form onSubmit={handleSubmit}>
-          <FormField
-            id="email" label={t.login.email} required className="border-gray-500" labelClassName="font-bold"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t.login.emailPlaceholder}
-          />
-
-          <FormField
-            id="password" label={t.login.password} required className="border-gray-500" labelClassName="font-bold"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder={t.login.passwordPlaceholder}
-          />
-
-          <div className="w-full flex justify-between flex-col gap-4">
-            <Button
-              type="submit"
-              variant="primary"
-              isLoading={isSubmitting}
-              disabled={isSubmitting}
-              loadingText={t.login.loggingIn}
-            >
-              {t.login.loginButton}
-            </Button>
-
-            <Link
-              to="/register"
-              className="text-center font-bold text-sm text-blue-500 hover:text-blue-800"
-            >
-              {t.login.registerLink}
-            </Link>
-          </div>
-        </form>
-      </Card>
-    </div>
+      <FormField
+        id="password" label={t.login.password} required labelClassName="font-bold"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder={t.login.passwordPlaceholder}
+      />
+    </AuthLayout>
   );
 };
 
