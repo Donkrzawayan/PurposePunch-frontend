@@ -109,6 +109,7 @@ export const t = {
       2: "Neutral 😐",
       3: "Slightly Satisfied 🙂",
       4: "Very Satisfied 🤩",
+      emojis: ["😡", "🙁", "😐", "🙂", "🤩"],
       star: "★",
       emptyStar: "☆"
     }
@@ -120,6 +121,8 @@ export const t = {
     loadMore: "Load More",
     description: "Context",
     reflection: "The Reality & Lessons",
-    upvote: "👊"
+    upvote: "👊",
+    showLess: "↑ Show less ↑",
+    showFull: "↓ Show full ↓"
   }
 };

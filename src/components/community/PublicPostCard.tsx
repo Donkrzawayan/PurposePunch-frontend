@@ -5,6 +5,7 @@ import { Button } from '../common/Button';
 import { publicService } from '../../api/services';
 import { cn } from '../../utils/cn';
 import { t } from '../../textResources';
+import { PostSection } from './PostSection';
 
 interface Props {
   post: PublicPostDto;
@@ -14,6 +15,10 @@ export const PublicPostCard = ({ post }: Props) => {
   const [votes, setVotes] = useState(post.upvoteCount);
   const [hasUpvoted, setHasUpvoted] = useState(post.isUpvoted);
   const [isUpvoting, setIsUpvoting] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const lessonsOrOutcome = post.lessonsLearned || post.actualOutcome || "";
+  const contentIsLong = (post.description.length + lessonsOrOutcome.length) > 200;
 
   const handleUpvote = async () => {
     if (hasUpvoted || isUpvoting) return;
@@ -34,7 +39,7 @@ export const PublicPostCard = ({ post }: Props) => {
   };
 
   const renderSatisfactionEmoji = (level: number | null) => {
-    const emojis = ["😡", "🙁", "😐", "🙂", "🤩"]; // TODO: move to textResources
+    const emojis = t.reflection.satisfaction.emojis;
     return level !== null ? emojis[level] : "";
   };
 
@@ -58,44 +63,59 @@ export const PublicPostCard = ({ post }: Props) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2"> {/* TODO: collapsing long posts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 text-sm">
 
         <div className="p-6 bg-white">
-          <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
-            {t.community.description}
-          </h4>
-          <p className="text-gray-600 text-sm whitespace-pre-wrap leading-relaxed">
+          <PostSection
+            title={t.community.description}
+            isExpanded={isExpanded}
+            className="text-gray-600"
+          >
             {post.description}
-          </p>
+          </PostSection>
         </div>
 
         <div className="p-6 bg-gray-50 md:border-l border-t md:border-t-0 border-gray-100">
-          <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
-            {t.community.reflection}
-          </h4>
-          <div className="text-gray-800 text-sm whitespace-pre-wrap leading-relaxed">
-            {post.lessonsLearned || post.actualOutcome}
-          </div>
+          <PostSection
+            title={t.community.reflection}
+            isExpanded={isExpanded}
+            className="text-gray-800 italic"
+          >
+            {lessonsOrOutcome}
+          </PostSection>
         </div>
 
       </div>
 
-      <div className="px-6 py-3 bg-white border-t border-gray-100 flex justify-end">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={handleUpvote}
-          disabled={hasUpvoted || isUpvoting}
-          className={cn(
-            "text-xs transition-all flex items-center gap-2",
-            hasUpvoted
-              ? "text-blue-700 border-blue-200 bg-blue-50 cursor-default hover:bg-blue-50"
-              : "hover:border-blue-300 hover:text-blue-600"
-          )}
-        >
-          <span>{t.community.upvote}</span>
-          <span className="font-bold">{votes}</span>
-        </Button>
+      <div className="relative px-6 py-3 bg-white border-t border-gray-100 flex justify-center items-center min-h-[60px]">
+        <div className="absolute left-6">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleUpvote}
+            disabled={hasUpvoted || isUpvoting}
+            className={cn(
+              "text-xs transition-all flex items-center gap-2",
+              hasUpvoted
+                ? "text-orange-700 border-orange-300 cursor-default disabled:opacity-100 hover:bg-orange-50"
+                : "hover:border-orange-300 hover:text-orange-600"
+            )}
+          >
+            <span>{t.community.upvote}</span>
+            <span className="font-bold">{votes}</span>
+          </Button>
+        </div>
+
+        {contentIsLong ? (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-xs font-bold text-blue-600 hover:text-blue-800 focus:outline-none"
+          >
+            {isExpanded ? t.community.showLess : t.community.showFull}
+          </button>
+        ) : (
+          <span />
+        )}
       </div>
     </Card>
   );
