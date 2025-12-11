@@ -112,5 +112,14 @@ export const t = {
       star: "★",
       emptyStar: "☆"
     }
+  },
+  community: {
+    title: "Community Feed",
+    subtitle: "Learn from others' victories and failures.",
+    empty: "No posts yet. Be the first to publish!",
+    loadMore: "Load More",
+    description: "Context",
+    reflection: "The Reality & Lessons",
+    upvote: "👊"
   }
 };

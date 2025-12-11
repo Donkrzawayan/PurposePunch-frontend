@@ -6,10 +6,7 @@ import Dashboard from './pages/Dashboard';
 import CreateDecision from './pages/CreateDecision';
 import ReflectionPage from './pages/ReflectionPage';
 import RegisterPage from './pages/RegisterPage';
-
-// --- Placeholder -------------------------------- TODO: (src/pages/) ---
-const CommunityFeed = () => <div className="p-4">Public Community Feed (TODO)</div>;
-// -----------------------------------------------------------------------
+import CommunityFeed from './pages/CommunityFeed';
 
 function App() {
   return (

@@ -90,6 +90,7 @@ export interface PublicPostDto {
   satisfaction: SatisfactionScale | null;
   upvoteCount: number;
   publishedAt: string;
+  isUpvoted: boolean;
 }
 
 export interface PaginatedResult<T> {
