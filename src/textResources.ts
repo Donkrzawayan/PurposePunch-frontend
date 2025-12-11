@@ -70,7 +70,10 @@ export const t = {
     },
     errors: {
       createFailed: "Failed to create decision.",
-      dateTooSoon: "Reflection date must be at least 1 hour in the future."
+      dateTooSoon: "Reflection date must be at least 1 hour in the future.",
+      missingTitle: "Title is required",
+      missingDescription: "Context is required",
+      missingOutcome: "Expected Outcome is required"
     }
   },
   reflection: {

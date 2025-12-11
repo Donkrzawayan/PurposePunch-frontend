@@ -25,14 +25,29 @@ const CreateDecision = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const validateAndSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!title.trim()) {
+      setError(t.createDecision.errors.missingTitle);
+      return;
+    }
 
     const selectedDate = new Date(reflectionDate);
     const oneHourInFuture = new Date(new Date().getTime() + 60 * 60 * 1000);
     if (selectedDate < oneHourInFuture) {
       setError(t.createDecision.errors.dateTooSoon);
+      return;
+    }
+
+    if (!description.trim()) {
+      setError(t.createDecision.errors.missingDescription);
+      return;
+    }
+
+    if (!expectedOutcome.trim()) {
+      setError(t.createDecision.errors.missingOutcome);
       return;
     }
 
@@ -64,7 +79,7 @@ const CreateDecision = () => {
 
         <Alert message={error} />
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={validateAndSubmit} className="space-y-6">
 
           <FormField
             id="title" label={t.createDecision.form.titleLabel} required
@@ -73,6 +88,7 @@ const CreateDecision = () => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t.createDecision.form.titlePlaceholder}
             maxLength={60}
+            error={error && !title.trim() ? t.createDecision.errors.missingTitle : null}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -104,6 +120,7 @@ const CreateDecision = () => {
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t.createDecision.form.descriptionPlaceholder}
             rows={4}
+            error={error && !description.trim() ? t.createDecision.errors.missingDescription : null}
           />
 
           <FormField
@@ -113,6 +130,7 @@ const CreateDecision = () => {
             onChange={(e) => setExpectedOutcome(e.target.value)}
             placeholder={t.createDecision.form.outcomePlaceholder}
             rows={3}
+            error={error && !expectedOutcome.trim() ? t.createDecision.errors.missingOutcome : null}
           />
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">

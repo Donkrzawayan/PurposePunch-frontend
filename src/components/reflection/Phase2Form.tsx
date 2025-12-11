@@ -63,7 +63,7 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
         <Alert message={error} />
 
         <FormField
-          id="outcome" label={t.reflection.phase2.actualOutcomeLabel} error={!actualOutcome.trim() ? error : null} required
+          id="outcome" label={t.reflection.phase2.actualOutcomeLabel} required
           type="textarea"
           value={actualOutcome}
           onChange={(e) => {
@@ -72,6 +72,7 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
           }}
           placeholder={t.reflection.phase2.actualOutcomePlaceholder}
           rows={4}
+          error={error && !actualOutcome.trim() ? t.reflection.errors.missingOutcome : null}
         />
 
         <FormField
