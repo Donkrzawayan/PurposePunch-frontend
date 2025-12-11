@@ -13,15 +13,15 @@ function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+
       <Route element={<Layout />}>
+        <Route path="/" element={<CommunityFeed />} />
 
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create" element={<CreateDecision />} />
           <Route path="/decision/:id" element={<ReflectionPage />} />
         </Route>
-        <Route path="/community" element={<CommunityFeed />} />
-
       </Route>
     </Routes>
   );

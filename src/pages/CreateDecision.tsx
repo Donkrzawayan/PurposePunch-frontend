@@ -48,7 +48,7 @@ const CreateDecision = () => {
       };
 
       await decisionService.create(command);
-      navigate('/');
+      navigate('/dashboard');
 
     } catch (err) {
       setError(getErrorMessage(err, t.createDecision.errors.createFailed));
@@ -118,7 +118,7 @@ const CreateDecision = () => {
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
             <Button
               variant="secondary"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/dashboard')}
             >
               {t.common.cancel}
             </Button>

@@ -22,7 +22,7 @@ const LoginPage = () => {
 
     try {
       await login({ email, password });
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError(getErrorMessage(err, t.login.error));
     } finally {
