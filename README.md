@@ -1,73 +1,46 @@
-# React + TypeScript + Vite
+# Purpose:Punch!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![React 19.2](https://img.shields.io/badge/React-19.2-087EA4)
+![Vite 7.2](https://img.shields.io/badge/Vite-7.2-ffc51d)
+![Tailwind CSS 4.1](https://img.shields.io/badge/Tailwind_CSS-4.1-38bdf8)
 
-Currently, two official plugins are available:
+**Purpose** of this app: To **punch** you for every decision you have made but never achieved. Now every such uncompleted decision will be put on public display, and you can already feel **punched** out!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Community Feed](./public/CommunityFeed.png)
 
-## React Compiler
+<details>
+<summary>More screenshots</summary>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+![Create new Decision](./public/CreateDecision.png)  
+![Your Decisions](./public/Dashboard.png)
 
-## Expanding the ESLint configuration
+</details>
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Concept
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Users log significant decisions with reasoning and expectations.  
+After a reflection period, users record outcomes and lessons learned.  
+Users can optionally publish anonymized reflections for others to browse, learn from, or get inspired by.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Framework:** React (via Vite)
+- **Language:** TypeScript (Strict typing for DTOs, Enums, and Props)
+- **Styling:** Tailwind CSS
+- **Routing:** React Router v7 (Protected & Public Routes)
+- **HTTP Client:** Axios (Global interceptors for Auth & Error Handling)
+- **Utilities:** clsx & tailwind-merge for intelligent style composition
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js (v20+)
+- The [PurposePunch Backend](https://github.com/Donkrzawayan/PurposePunch-backend) configured via .env.
+
+### Installation
+
+```pwsh
+npm install # dependencies
+npm run dev
 ```
