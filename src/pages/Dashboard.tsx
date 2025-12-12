@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { decisionService } from '../api/services';
-import { DecisionStatus, type DecisionDto } from '../types';
+import { type DecisionDto } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
 import { t } from '../textResources';
 import { getErrorMessage } from '../utils/errorUtils';
-import { StatusBadge } from '../components/common/StatusBadge';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Alert } from '../components/common/Alert';
+import { DecisionCard } from '../components/decision/DecisionCard';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -30,18 +30,6 @@ const Dashboard = () => {
 
     fetchDecisions();
   }, []);
-
-  const getOngoingDate = (status: DecisionStatus, expectedReflectionDate: string, reflectedAt: string | null) => {
-    if (status === DecisionStatus.Reflected && reflectedAt) {
-      return (
-        <> {t.dashboard.reflected} {new Date(reflectedAt).toLocaleDateString()} </>
-      );
-    }
-    return (
-      <> {t.dashboard.expected} {new Date(expectedReflectionDate).toLocaleDateString()} </>
-    );
-  };
-
 
   if (isLoading) {
     return <div className="p-8 text-center text-gray-500">{t.common.loading}</div>;
@@ -74,26 +62,7 @@ const Dashboard = () => {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {decisions.map((decision) => (
-            <Card key={decision.id} className="hover:shadow-md relative">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-lg text-gray-800">{decision.title}</h3>
-                <StatusBadge status={decision.status} className="text-xs" />
-              </div>
-
-              <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                {decision.description}
-              </p>
-
-              <div className="flex justify-between items-end mt-4">
-                <div className="text-xs text-gray-400">
-                  {getOngoingDate(decision.status, decision.expectedReflectionDate, decision.reflectedAt)}
-                </div>
-
-                <Link to={`/decision/${decision.id}`} className="text-blue-600 text-sm font-medium hover:text-blue-800">
-                  {t.dashboard.detailsLink}
-                </Link>
-              </div>
-            </Card>
+            <DecisionCard key={decision.id} decision={decision} />
           ))}
         </div>
       )}
