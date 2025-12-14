@@ -7,17 +7,16 @@ import { ReflectionHeader } from '../components/reflection/ReflectionHeader';
 import { Phase1 } from '../components/reflection/Phase1';
 import { Phase2Result } from '../components/reflection/Phase2Result';
 import { Phase2Form, type ReflectionFormData } from '../components/reflection/Phase2Form';
-import { getErrorMessage } from '../utils/errorUtils';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Alert } from '../components/common/Alert';
+import { useAsyncActionForForm } from '../hooks/useAsyncActionForForm';
 
 const ReflectionPage = () => {
   const { id } = useParams<{ id: string }>();
+  const { isSubmitting, error, setError, execute } = useAsyncActionForForm();
 
   const [decision, setDecision] = useState<DecisionDto | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchDecision = async () => {
@@ -37,33 +36,31 @@ const ReflectionPage = () => {
 
   const handleFormSubmit = async (formData: ReflectionFormData, shouldPublish: boolean) => {
     if (!decision) return;
-    setIsSubmitting(true);
 
-    try {
-      const command: UpdateDecisionCommand = {
-        id: decision.id,
-        title: decision.title,
-        description: decision.description,
-        expectedOutcome: decision.expectedOutcome,
-        visibility: decision.visibility,
-        actualOutcome: formData.actualOutcome,
-        lessonsLearned: formData.lessonsLearned,
-        privateNotes: formData.privateNotes,
-        satisfaction: formData.satisfaction
-      };
+    await execute(
+      async () => {
+        const command: UpdateDecisionCommand = {
+          id: decision.id,
+          title: decision.title,
+          description: decision.description,
+          expectedOutcome: decision.expectedOutcome,
+          visibility: decision.visibility,
+          actualOutcome: formData.actualOutcome,
+          lessonsLearned: formData.lessonsLearned,
+          privateNotes: formData.privateNotes,
+          satisfaction: formData.satisfaction
+        };
 
-      await decisionService.update(decision.id, command);
+        await decisionService.update(decision.id, command);
 
-      if (shouldPublish) {
-        await decisionService.publish(decision.id);
-      }
+        if (shouldPublish) {
+          await decisionService.publish(decision.id);
+        }
 
-      window.location.reload();
-    } catch (err) {
-      setError(getErrorMessage(err, t.reflection.errors.updateFailed));
-    } finally {
-      setIsSubmitting(false);
-    }
+        window.location.reload();
+      },
+      t.reflection.errors.updateFailed
+    );
   };
 
   if (loading) return <div className="p-8 text-center">{t.common.loading}</div>;

@@ -4,14 +4,15 @@ import { decisionService } from '../api/services';
 import { type CreateDecisionCommand, Visibility } from '../types';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
-import { getErrorMessage } from '../utils/errorUtils';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Alert } from '../components/common/Alert';
+import { useAsyncActionForForm } from '../hooks/useAsyncActionForForm';
 
 const CreateDecision = () => {
   const navigate = useNavigate();
+  const { isSubmitting, error, setError, execute } = useAsyncActionForForm();
 
   const defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 1);
@@ -22,12 +23,8 @@ const CreateDecision = () => {
   const [reflectionDate, setReflectionDate] = useState(defaultDate.toISOString().slice(0, 16));
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Private);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const validateAndSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     if (!title.trim()) {
       setError(t.createDecision.errors.missingTitle);
@@ -51,25 +48,21 @@ const CreateDecision = () => {
       return;
     }
 
-    setIsSubmitting(true);
+    await execute(
+      async () => {
+        const command: CreateDecisionCommand = {
+          title,
+          description,
+          expectedOutcome,
+          visibility,
+          expectedReflectionDate: new Date(reflectionDate).toISOString()
+        };
 
-    try {
-      const command: CreateDecisionCommand = {
-        title,
-        description,
-        expectedOutcome,
-        visibility,
-        expectedReflectionDate: new Date(reflectionDate).toISOString()
-      };
-
-      await decisionService.create(command);
-      navigate('/dashboard');
-
-    } catch (err) {
-      setError(getErrorMessage(err, t.createDecision.errors.createFailed));
-    } finally {
-      setIsSubmitting(false);
-    }
+        await decisionService.create(command);
+        navigate('/dashboard');
+      },
+      t.createDecision.errors.createFailed
+    );
   };
 
   return (

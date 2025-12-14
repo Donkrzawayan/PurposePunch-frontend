@@ -1,48 +1,35 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../api/services';
-import type { RegisterCommand } from '../types';
 import { FormField } from '../components/common/FormField';
 import { t } from '../textResources';
-import { getErrorMessage } from '../utils/errorUtils';
 import { AuthLayout } from '../components/layout/AuthLayout';
+import { useAsyncActionForForm } from '../hooks/useAsyncActionForForm';
+import { useAuth } from '../context/AuthContext';
 
 const RegisterPage = () => {
+  const { register } = useAuth();
   const navigate = useNavigate();
+  const { isSubmitting, error, setError, execute } = useAsyncActionForForm();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     if (password !== confirmPassword) {
       setError(t.register.errors.passwordMismatch);
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
-      const command: RegisterCommand = {
-        email,
-        password
-      };
-
-      await authService.register(command);
-
-      navigate('/login');
-
-    } catch (err) {
-      setError(getErrorMessage(err, t.register.errors.failed));
-    } finally {
-      setIsSubmitting(false);
-    }
+    await execute(
+      async () => {
+        await register({ email, password });
+        navigate('/login');
+      },
+      t.register.errors.failed
+    );
   };
 
   return (

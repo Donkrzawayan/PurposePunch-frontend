@@ -3,31 +3,27 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
-import { getErrorMessage } from '../utils/errorUtils';
 import { AuthLayout } from '../components/layout/AuthLayout';
+import { useAsyncActionForForm } from '../hooks/useAsyncActionForForm';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { isSubmitting, error, execute } = useAsyncActionForForm();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
 
-    try {
-      await login({ email, password });
-      navigate('/dashboard');
-    } catch (err) {
-      setError(getErrorMessage(err, t.login.error));
-    } finally {
-      setIsSubmitting(false);
-    }
+    await execute(
+      async () => {
+        await login({ email, password });
+        navigate('/dashboard');
+      },
+      t.login.error
+    );
   };
 
   return (
