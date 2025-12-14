@@ -1,52 +1,12 @@
-import { useEffect, useState } from 'react';
-import { publicService } from '../api/services';
-import type { PublicPostDto } from '../types';
 import { PageContainer } from '../components/layout/PageContainer';
 import { PublicPostCard } from '../components/community/PublicPostCard';
 import { Button } from '../components/common/Button';
 import { Alert } from '../components/common/Alert';
 import { t } from '../textResources';
-import { getErrorMessage } from '../utils/errorUtils';
+import { usePublicPosts } from '../hooks/usePublicPosts';
 
 const CommunityFeed = () => {
-  const [posts, setPosts] = useState<PublicPostDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-
-  useEffect(() => {
-    loadPosts(1);
-  }, []);
-
-  const loadPosts = async (pageNumber: number) => {
-    try {
-      if (pageNumber === 1) setLoading(true);
-      else setIsLoadingMore(true);
-
-      const result = await publicService.getAll(pageNumber, 10);
-
-      if (pageNumber === 1) {
-        setPosts(result.items);
-      } else {
-        setPosts(prev => [...prev, ...result.items]);
-      }
-
-      setHasMore(result.pageNumber < result.totalPages);
-      setPage(pageNumber);
-    } catch (err) {
-      setError(getErrorMessage(err, t.common.networkError));
-    } finally {
-      setLoading(false);
-      setIsLoadingMore(false);
-    }
-  };
-
-  const handleLoadMore = () => {
-    loadPosts(page + 1);
-  };
+  const { posts, loading, loadingMore, error, hasMore, loadNextPage } = usePublicPosts();
 
   return (
     <PageContainer className="max-w-5xl">
@@ -77,8 +37,8 @@ const CommunityFeed = () => {
             <div className="mt-8 text-center">
               <Button
                 variant="secondary"
-                onClick={handleLoadMore}
-                isLoading={isLoadingMore}
+                onClick={loadNextPage}
+                isLoading={loadingMore}
               >
                 {t.community.loadMore}
               </Button>
