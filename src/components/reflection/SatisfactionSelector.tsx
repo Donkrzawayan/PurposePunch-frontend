@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { SatisfactionScale } from '../../types';
 import { t } from '../../textResources';
 import { cn } from '../../utils/cn';
+import { FieldLabel, FieldMessage } from '../common/FormElements';
 
 interface Props {
   value: SatisfactionScale | null;
@@ -29,9 +30,9 @@ export const SatisfactionSelector = ({
 
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
+      <FieldLabel required={required}>
+        {label}
+      </FieldLabel>
 
       <div className={cn(
         "flex flex-col items-center p-4 rounded-lg border transition-colors",
@@ -73,11 +74,7 @@ export const SatisfactionSelector = ({
         </div>
       </div>
 
-      {error && (
-        <p className="text-xs text-red-600 mt-1 font-medium animate-pulse">
-          {error}
-        </p>
-      )}
+      <FieldMessage error={error} />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '../../utils/cn';
+import { FieldLabel, FieldMessage } from './FormElements';
 
 interface BaseFieldProps {
   id: string;
@@ -64,7 +65,7 @@ export const FormField = (props: FormFieldProps) => {
             required={required}
           />
         );
-      
+
       case 'select':
         return (
           <select
@@ -84,7 +85,7 @@ export const FormField = (props: FormFieldProps) => {
 
       // input (text, number, date...)
       default:
-        const inputProps = props as InputProps; 
+        const inputProps = props as InputProps;
         return (
           <input
             id={id}
@@ -102,21 +103,13 @@ export const FormField = (props: FormFieldProps) => {
 
   return (
     <div className="mb-4">
-      <label htmlFor={id} className={cn("block text-sm text-gray-700 mb-1 font-medium", labelClassName)}>
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      
+      <FieldLabel htmlFor={id} required={required} className={labelClassName}>
+        {label}
+      </FieldLabel>
+
       {renderField()}
 
-      {error ? (
-        <p className="text-xs text-red-600 mt-1 font-medium animate-pulse">
-          {error}
-        </p>
-      ) : helperText ? (
-        <p className="text-xs text-gray-500 mt-1">
-          {helperText}
-        </p>
-      ) : null}
+      <FieldMessage error={error} helperText={helperText} />
     </div>
   );
 };
