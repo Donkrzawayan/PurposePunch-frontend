@@ -1,4 +1,4 @@
-import type { DecisionDto } from '../../types';
+import type { DecisionDto } from '../../api/generated/model';
 import { t } from '../../textResources';
 import { ReadOnlyField } from '../common/ReadOnlyField';
 import { PhaseHeader } from './PhaseHeader';

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { publicService } from '../api/services';
-import type { PublicPostDto } from '../types';
+import { getPublicPosts } from '../api/generated/public-posts/public-posts';
+import type { PublicPostDto } from '../api/generated/model';
 import { t } from '../textResources';
 import { getErrorMessage } from '../utils/errorUtils';
 
@@ -19,9 +19,14 @@ export const usePublicPosts = (pageSize: number = 10) => {
       if (pageNumber === 1) setLoading(true);
       else setLoadingMore(true);
 
-      const result = await publicService.getAll(pageNumber, pageSize);
+      const { getApiPublicPosts } = getPublicPosts();
+      const result = await getApiPublicPosts({
+        PageNumber: pageNumber,
+        PageSize: pageSize
+      });
+      const items = result.items || [];
 
-      setPosts(prev => pageNumber === 1 ? result.items : [...prev, ...result.items]);
+      setPosts(prev => pageNumber === 1 ? items : [...prev, ...items]);
       setHasMore(result.pageNumber < result.totalPages);
       setPage(pageNumber);
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { DecisionStatus, type DecisionDto } from "../../types";
+import { DecisionStatus, type DecisionDto } from "../../api/generated/model";
 import { Card } from "../common/Card";
 import { StatusBadge } from "../common/StatusBadge";
 import { t } from "../../textResources";

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DecisionStatus, SatisfactionScale, Visibility } from '../../types';
+import { DecisionStatus, SatisfactionScale, Visibility } from '../../api/generated/model';
 import { t } from '../../textResources';
 import { FormField } from '../common/FormField';
 import { PhaseHeader } from './PhaseHeader';
@@ -104,7 +104,7 @@ export const Phase2Form = ({ status, visibility, isSubmitting, onSubmit }: Props
         />
 
         <div className="pt-4 flex flex-col gap-3">
-          {visibility === Visibility.Public && (
+          {visibility === Visibility.PublicAnon && (
             <Button
               variant="primary"
               size="lg"

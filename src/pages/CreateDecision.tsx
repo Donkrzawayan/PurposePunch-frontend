@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { decisionService } from '../api/services';
-import { type CreateDecisionCommand, Visibility } from '../types';
+import { getDecisions } from '../api/generated/decisions/decisions';
+import { type CreateDecisionCommand, Visibility } from '../api/generated/model';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
 import { Button } from '../components/common/Button';
@@ -58,7 +58,8 @@ const CreateDecision = () => {
           expectedReflectionDate: new Date(reflectionDate).toISOString()
         };
 
-        await decisionService.create(command);
+        const { postApiDecisions } = getDecisions();
+        await postApiDecisions(command);
         navigate('/dashboard');
       },
       t.createDecision.errors.createFailed
@@ -97,10 +98,10 @@ const CreateDecision = () => {
               id="visibility" label={t.decision.visibility.label} required
               type="select"
               value={visibility}
-              onChange={(e) => setVisibility(Number(e.target.value) as Visibility)}
+              onChange={(e) => setVisibility(e.target.value as Visibility)}
               options={[
                 { value: Visibility.Private, label: t.decision.visibility.private },
-                { value: Visibility.Public, label: t.decision.visibility.public }
+                { value: Visibility.PublicAnon, label: t.decision.visibility.public }
               ]}
             />
 

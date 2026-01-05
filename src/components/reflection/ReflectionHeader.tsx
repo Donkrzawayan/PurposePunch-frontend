@@ -1,4 +1,4 @@
-import { type DecisionDto } from '../../types';
+import type { DecisionDto } from '../../api/generated/model';
 import { t } from '../../textResources';
 import { StatusBadge } from '../common/StatusBadge';
 import { VisibilityBadge } from '../common/VisibilityBadge';

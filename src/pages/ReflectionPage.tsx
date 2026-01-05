@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { decisionService } from '../api/services';
-import { type DecisionDto, DecisionStatus, type UpdateDecisionCommand } from '../types';
+import { getDecisions } from '../api/generated/decisions/decisions';
+import { type DecisionDto, DecisionStatus, type UpdateDecisionCommand } from '../api/generated/model';
 import { t } from '../textResources';
 import { ReflectionHeader } from '../components/reflection/ReflectionHeader';
 import { Phase1 } from '../components/reflection/Phase1';
@@ -18,11 +18,13 @@ const ReflectionPage = () => {
   const [decision, setDecision] = useState<DecisionDto | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const { getApiDecisionsId, putApiDecisionsId, postApiDecisionsIdPublish } = getDecisions();
+
   useEffect(() => {
     const fetchDecision = async () => {
       if (!id) return;
       try {
-        const data = await decisionService.getById(Number(id));
+        const data = await getApiDecisionsId(Number(id))
         setDecision(data);
       } catch (err) {
         console.error(err);
@@ -51,10 +53,10 @@ const ReflectionPage = () => {
           satisfaction: formData.satisfaction
         };
 
-        await decisionService.update(decision.id, command);
+        await putApiDecisionsId(decision.id, command);
 
         if (shouldPublish) {
-          await decisionService.publish(decision.id);
+          await postApiDecisionsIdPublish(decision.id);
         }
 
         window.location.reload();

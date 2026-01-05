@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { authService } from '../api/services';
-import type { LoginCommand, RegisterCommand } from '../types';
+import { getAuth } from '../api/generated/auth/auth';
+import type { LoginCommand, RegisterCommand } from '../api/generated/model';
 
 interface AuthContextType {
   token: string | null;
@@ -29,7 +29,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (data: LoginCommand) => {
     try {
-      const response = await authService.login(data);
+      const { postApiAuthLogin } = getAuth();
+      const response = await postApiAuthLogin(data);
       setToken(response.token);
       localStorage.setItem('token', response.token);
       setIsAuthenticated(true);
@@ -41,7 +42,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = async (data: RegisterCommand) => {
     try {
-      await authService.register(data);
+      const { postApiAuthRegister } = getAuth();
+      await postApiAuthRegister(data);
     } catch (error) {
       console.error("Registration failed", error);
       throw error;

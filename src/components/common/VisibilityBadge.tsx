@@ -1,9 +1,9 @@
-import { Visibility } from '../../types';
+import { Visibility } from '../../api/generated/model';
 import { t } from '../../textResources';
 
 export const VisibilityBadge = ({ visibility }: { visibility: Visibility }) => {
   const config = {
-    [Visibility.Public]: {
+    [Visibility.PublicAnon]: {
       text: t.decision.visibility.public,
       style: "bg-purple-100 text-purple-800 border-purple-200"
     },

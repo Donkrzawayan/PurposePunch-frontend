@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { decisionService } from '../api/services';
-import { type DecisionDto } from '../types';
+import { getDecisions } from '../api/generated/decisions/decisions';
+import type { DecisionDto } from '../api/generated/model';
 import { Link, useNavigate } from 'react-router-dom';
 import { t } from '../textResources';
 import { getErrorMessage } from '../utils/errorUtils';
@@ -19,7 +19,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDecisions = async () => {
       try {
-        const data = await decisionService.getAll();
+        const { getApiDecisions } = getDecisions();
+        const data = await getApiDecisions();
         setDecisions(data);
       } catch (err) {
         setError(getErrorMessage(err, t.dashboard.error));

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { ProblemDetails } from '../types';
+import type { ProblemDetails } from '../api/generated/model';
 import { t } from '../textResources';
 
 export const getErrorMessage = (error: unknown, fallbackMessage: string = "Operation failed"): string => {

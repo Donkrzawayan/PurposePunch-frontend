@@ -1,4 +1,4 @@
-import { DecisionStatus } from '../../types';
+import { DecisionStatus } from '../../api/generated/model';
 import { t } from '../../textResources';
 import { cn } from '../../utils/cn';
 
