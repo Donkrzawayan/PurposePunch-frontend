@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import type { PublicPostDto } from '../../types';
+import type { PublicPostDto } from '../../api/generated/model';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
-import { publicService } from '../../api/services';
+import { getPublicPosts } from '../../api/generated/public-posts/public-posts';
 import { cn } from '../../utils/cn';
 import { t } from '../../textResources';
 import { PostSection } from './PostSection';
+import { getSatisfactionEmoji } from '../../utils/satisfactionUtils';
 
 interface Props {
   post: PublicPostDto;
@@ -28,7 +29,8 @@ export const PublicPostCard = ({ post }: Props) => {
     setHasUpvoted(true);
 
     try {
-      await publicService.upvote(post.id);
+      const { postApiPublicPostsIdUpvote } = getPublicPosts();
+      await postApiPublicPostsIdUpvote(post.id);
     } catch (error) {
       console.error("Upvote failed", error);
       setVotes((prev) => prev - 1);
@@ -36,11 +38,6 @@ export const PublicPostCard = ({ post }: Props) => {
     } finally {
       setIsUpvoting(false);
     }
-  };
-
-  const renderSatisfactionEmoji = (level: number | null) => {
-    const emojis = t.reflection.satisfaction.emojis;
-    return level !== null ? emojis[level] : "";
   };
 
   return (
@@ -59,7 +56,7 @@ export const PublicPostCard = ({ post }: Props) => {
           </div>
         </div>
         <div className="text-2xl" title="Satisfaction Level">
-          {renderSatisfactionEmoji(post.satisfaction)}
+          {getSatisfactionEmoji(post.satisfaction)}
         </div>
       </div>
 

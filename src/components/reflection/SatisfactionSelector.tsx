@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { SatisfactionScale } from '../../types';
+import type { SatisfactionScale } from '../../api/generated/model';
 import { t } from '../../textResources';
 import { cn } from '../../utils/cn';
 import { FieldLabel, FieldMessage } from '../common/FormElements';
+import { getSatisfactionIndex, getSatisfactionLabel, SATISFACTION_ORDER } from '../../utils/satisfactionUtils';
 
 interface Props {
   value: SatisfactionScale | null;
@@ -19,14 +20,10 @@ export const SatisfactionSelector = ({
   label = t.reflection.phase2.satisfactionLabel,
   required = false
 }: Props) => {
-  const [hoverValue, setHoverValue] = useState<number | null>(null);
+  const [hoverValue, setHoverValue] = useState<SatisfactionScale | null>(null);
 
-  const renderText = (level: number | null) => {
-    if (level === null) return t.reflection.phase2.satisfactionPlaceholder;
-    return t.reflection.satisfaction[level as keyof typeof t.reflection.satisfaction] || level;
-  };
-
-  const currentDisplayValue = hoverValue !== null ? hoverValue : value;
+  const displayValue = hoverValue ?? value;
+  const displayIndex = getSatisfactionIndex(displayValue);
 
   return (
     <div className="mb-4">
@@ -42,21 +39,21 @@ export const SatisfactionSelector = ({
       )}>
 
         <div className="flex justify-between w-full text-xs text-gray-400 mb-2 px-1">
-          <span>{t.reflection.satisfaction[SatisfactionScale.VeryDissatisfied]}</span>
-          <span>{t.reflection.satisfaction[SatisfactionScale.VerySatisfied]}</span>
+          <span>{getSatisfactionLabel(SATISFACTION_ORDER[0])}</span>
+          <span>{getSatisfactionLabel(SATISFACTION_ORDER[SATISFACTION_ORDER.length - 1])}</span>
         </div>
 
         <div className="flex gap-2 mb-2">
-          {Object.values(SatisfactionScale).filter(v => typeof v === 'number').map((star) => (
+          {SATISFACTION_ORDER.map((level, index) => (
             <button
-              key={star}
+              key={level}
               type="button"
-              onClick={() => onChange(star as SatisfactionScale)}
-              onMouseEnter={() => setHoverValue(star)}
+              onClick={() => onChange(level)}
+              onMouseEnter={() => setHoverValue(level)}
               onMouseLeave={() => setHoverValue(null)}
               className={cn(
                 "text-3xl transition-transform hover:scale-110 focus:outline-none",
-                (currentDisplayValue !== null && star <= currentDisplayValue)
+                (index <= displayIndex)
                   ? "text-yellow-400 drop-shadow-sm"
                   : "text-gray-300"
               )}
@@ -68,9 +65,9 @@ export const SatisfactionSelector = ({
 
         <div className={cn(
           "h-5 text-sm font-bold transition-colors",
-          currentDisplayValue === null ? "text-gray-400 italic" : "text-blue-600"
+          displayIndex === -1 ? "text-gray-400 italic" : "text-blue-600"
         )}>
-          {renderText(currentDisplayValue)}
+          {getSatisfactionLabel(displayValue)}
         </div>
       </div>
 
