@@ -4,8 +4,25 @@
  * PurposePunch.Api
  * OpenAPI spec version: 1.0
  */
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
+} from "@tanstack/react-query";
+
 import type {
   GetApiPublicPostsParams,
+  ProblemDetails,
   PublicPostDto,
   PublicPostDtoPagedResult,
 } from ".././model";
@@ -14,44 +31,402 @@ import { customInstance } from "../../mutator/custom-instance";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getPublicPosts = () => {
-  const getApiPublicPosts = (
-    params?: GetApiPublicPostsParams,
-    options?: SecondParameter<typeof customInstance<PublicPostDtoPagedResult>>,
-  ) => {
-    return customInstance<PublicPostDtoPagedResult>(
-      { url: `/api/PublicPosts`, method: "GET", params },
-      options,
-    );
-  };
-  const getApiPublicPostsId = (
-    id: number,
-    options?: SecondParameter<typeof customInstance<PublicPostDto>>,
-  ) => {
-    return customInstance<PublicPostDto>(
-      { url: `/api/PublicPosts/${id}`, method: "GET" },
-      options,
-    );
-  };
-  const postApiPublicPostsIdUpvote = (
-    id: number,
-    options?: SecondParameter<typeof customInstance<void>>,
-  ) => {
-    return customInstance<void>(
-      { url: `/api/PublicPosts/${id}/upvote`, method: "POST" },
-      options,
-    );
-  };
-  return { getApiPublicPosts, getApiPublicPostsId, postApiPublicPostsIdUpvote };
+export const getApiPublicPosts = (
+  params?: GetApiPublicPostsParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PublicPostDtoPagedResult>(
+    { url: `/api/PublicPosts`, method: "GET", params, signal },
+    options,
+  );
 };
-export type GetApiPublicPostsResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getPublicPosts>["getApiPublicPosts"]>>
+
+export const getGetApiPublicPostsQueryKey = (
+  params?: GetApiPublicPostsParams,
+) => {
+  return [`/api/PublicPosts`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiPublicPostsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiPublicPosts>>,
+  TError = unknown,
+>(
+  params?: GetApiPublicPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPosts>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiPublicPostsQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiPublicPosts>>
+  > = ({ signal }) => getApiPublicPosts(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiPublicPosts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiPublicPostsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiPublicPosts>>
 >;
-export type GetApiPublicPostsIdResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getPublicPosts>["getApiPublicPostsId"]>>
+export type GetApiPublicPostsQueryError = unknown;
+
+export function useGetApiPublicPosts<
+  TData = Awaited<ReturnType<typeof getApiPublicPosts>>,
+  TError = unknown,
+>(
+  params: undefined | GetApiPublicPostsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPosts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPublicPosts>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPublicPosts>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPublicPosts<
+  TData = Awaited<ReturnType<typeof getApiPublicPosts>>,
+  TError = unknown,
+>(
+  params?: GetApiPublicPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPosts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPublicPosts>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPublicPosts>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPublicPosts<
+  TData = Awaited<ReturnType<typeof getApiPublicPosts>>,
+  TError = unknown,
+>(
+  params?: GetApiPublicPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPosts>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useGetApiPublicPosts<
+  TData = Awaited<ReturnType<typeof getApiPublicPosts>>,
+  TError = unknown,
+>(
+  params?: GetApiPublicPostsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPosts>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiPublicPostsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getApiPublicPostsId = (
+  id: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PublicPostDto>(
+    { url: `/api/PublicPosts/${id}`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetApiPublicPostsIdQueryKey = (id?: number) => {
+  return [`/api/PublicPosts/${id}`] as const;
+};
+
+export const getGetApiPublicPostsIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiPublicPostsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPostsId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApiPublicPostsIdQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiPublicPostsId>>
+  > = ({ signal }) => getApiPublicPostsId(id, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiPublicPostsId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiPublicPostsIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiPublicPostsId>>
 >;
-export type PostApiPublicPostsIdUpvoteResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getPublicPosts>["postApiPublicPostsIdUpvote"]>
-  >
+export type GetApiPublicPostsIdQueryError = ProblemDetails;
+
+export function useGetApiPublicPostsId<
+  TData = Awaited<ReturnType<typeof getApiPublicPostsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPostsId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPublicPostsId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPublicPostsId>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPublicPostsId<
+  TData = Awaited<ReturnType<typeof getApiPublicPostsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPostsId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPublicPostsId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPublicPostsId>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiPublicPostsId<
+  TData = Awaited<ReturnType<typeof getApiPublicPostsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPostsId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useGetApiPublicPostsId<
+  TData = Awaited<ReturnType<typeof getApiPublicPostsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiPublicPostsId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiPublicPostsIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const postApiPublicPostsIdUpvote = (
+  id: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/api/PublicPosts/${id}/upvote`, method: "POST", signal },
+    options,
+  );
+};
+
+export const getPostApiPublicPostsIdUpvoteMutationOptions = <
+  TError = ProblemDetails,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiPublicPostsIdUpvote>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiPublicPostsIdUpvote>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["postApiPublicPostsIdUpvote"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiPublicPostsIdUpvote>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return postApiPublicPostsIdUpvote(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiPublicPostsIdUpvoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiPublicPostsIdUpvote>>
 >;
+
+export type PostApiPublicPostsIdUpvoteMutationError = ProblemDetails;
+
+export const usePostApiPublicPostsIdUpvote = <
+  TError = ProblemDetails,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postApiPublicPostsIdUpvote>>,
+      TError,
+      { id: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postApiPublicPostsIdUpvote>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationOptions = getPostApiPublicPostsIdUpvoteMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};

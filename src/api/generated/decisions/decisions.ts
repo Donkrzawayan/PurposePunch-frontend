@@ -4,9 +4,26 @@
  * PurposePunch.Api
  * OpenAPI spec version: 1.0
  */
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
+} from "@tanstack/react-query";
+
 import type {
   CreateDecisionCommand,
   DecisionDto,
+  ProblemDetails,
   UpdateDecisionCommand,
 } from ".././model";
 
@@ -14,97 +31,631 @@ import { customInstance } from "../../mutator/custom-instance";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getDecisions = () => {
-  const getApiDecisionsId = (
-    id: number,
-    options?: SecondParameter<typeof customInstance<DecisionDto>>,
-  ) => {
-    return customInstance<DecisionDto>(
-      { url: `/api/Decisions/${id}`, method: "GET" },
-      options,
-    );
-  };
-  const putApiDecisionsId = (
-    id: number,
-    updateDecisionCommand: UpdateDecisionCommand,
-    options?: SecondParameter<typeof customInstance<void>>,
-  ) => {
-    return customInstance<void>(
-      {
-        url: `/api/Decisions/${id}`,
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        data: updateDecisionCommand,
-      },
-      options,
-    );
-  };
-  const deleteApiDecisionsId = (
-    id: number,
-    options?: SecondParameter<typeof customInstance<void>>,
-  ) => {
-    return customInstance<void>(
-      { url: `/api/Decisions/${id}`, method: "DELETE" },
-      options,
-    );
-  };
-  const getApiDecisions = (
-    options?: SecondParameter<typeof customInstance<DecisionDto[]>>,
-  ) => {
-    return customInstance<DecisionDto[]>(
-      { url: `/api/Decisions`, method: "GET" },
-      options,
-    );
-  };
-  const postApiDecisions = (
-    createDecisionCommand: CreateDecisionCommand,
-    options?: SecondParameter<typeof customInstance<void>>,
-  ) => {
-    return customInstance<void>(
-      {
-        url: `/api/Decisions`,
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: createDecisionCommand,
-      },
-      options,
-    );
-  };
-  const postApiDecisionsIdPublish = (
-    id: number,
-    options?: SecondParameter<typeof customInstance<void>>,
-  ) => {
-    return customInstance<void>(
-      { url: `/api/Decisions/${id}/publish`, method: "POST" },
-      options,
-    );
-  };
-  return {
-    getApiDecisionsId,
-    putApiDecisionsId,
-    deleteApiDecisionsId,
-    getApiDecisions,
-    postApiDecisions,
-    postApiDecisionsIdPublish,
-  };
+export const getApiDecisionsId = (
+  id: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<DecisionDto>(
+    { url: `/api/Decisions/${id}`, method: "GET", signal },
+    options,
+  );
 };
-export type GetApiDecisionsIdResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDecisions>["getApiDecisionsId"]>>
+
+export const getGetApiDecisionsIdQueryKey = (id?: number) => {
+  return [`/api/Decisions/${id}`] as const;
+};
+
+export const getGetApiDecisionsIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiDecisionsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisionsId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApiDecisionsIdQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiDecisionsId>>
+  > = ({ signal }) => getApiDecisionsId(id, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiDecisionsId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiDecisionsIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiDecisionsId>>
 >;
-export type PutApiDecisionsIdResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDecisions>["putApiDecisionsId"]>>
+export type GetApiDecisionsIdQueryError = ProblemDetails;
+
+export function useGetApiDecisionsId<
+  TData = Awaited<ReturnType<typeof getApiDecisionsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisionsId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDecisionsId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDecisionsId>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiDecisionsId<
+  TData = Awaited<ReturnType<typeof getApiDecisionsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisionsId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDecisionsId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDecisionsId>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiDecisionsId<
+  TData = Awaited<ReturnType<typeof getApiDecisionsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisionsId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useGetApiDecisionsId<
+  TData = Awaited<ReturnType<typeof getApiDecisionsId>>,
+  TError = ProblemDetails,
+>(
+  id: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisionsId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiDecisionsIdQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const putApiDecisionsId = (
+  id: number,
+  updateDecisionCommand: UpdateDecisionCommand,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/Decisions/${id}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: updateDecisionCommand,
+    },
+    options,
+  );
+};
+
+export const getPutApiDecisionsIdMutationOptions = <
+  TError = ProblemDetails,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof putApiDecisionsId>>,
+    TError,
+    { id: number; data: UpdateDecisionCommand },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof putApiDecisionsId>>,
+  TError,
+  { id: number; data: UpdateDecisionCommand },
+  TContext
+> => {
+  const mutationKey = ["putApiDecisionsId"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof putApiDecisionsId>>,
+    { id: number; data: UpdateDecisionCommand }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return putApiDecisionsId(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PutApiDecisionsIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof putApiDecisionsId>>
 >;
-export type DeleteApiDecisionsIdResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDecisions>["deleteApiDecisionsId"]>>
+export type PutApiDecisionsIdMutationBody = UpdateDecisionCommand;
+export type PutApiDecisionsIdMutationError = ProblemDetails;
+
+export const usePutApiDecisionsId = <
+  TError = ProblemDetails,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof putApiDecisionsId>>,
+      TError,
+      { id: number; data: UpdateDecisionCommand },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof putApiDecisionsId>>,
+  TError,
+  { id: number; data: UpdateDecisionCommand },
+  TContext
+> => {
+  const mutationOptions = getPutApiDecisionsIdMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+export const deleteApiDecisionsId = (
+  id: number,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<void>(
+    { url: `/api/Decisions/${id}`, method: "DELETE" },
+    options,
+  );
+};
+
+export const getDeleteApiDecisionsIdMutationOptions = <
+  TError = ProblemDetails,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteApiDecisionsId>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteApiDecisionsId>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["deleteApiDecisionsId"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteApiDecisionsId>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteApiDecisionsId(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteApiDecisionsIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteApiDecisionsId>>
 >;
-export type GetApiDecisionsResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDecisions>["getApiDecisions"]>>
+
+export type DeleteApiDecisionsIdMutationError = ProblemDetails;
+
+export const useDeleteApiDecisionsId = <
+  TError = ProblemDetails,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteApiDecisionsId>>,
+      TError,
+      { id: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteApiDecisionsId>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationOptions = getDeleteApiDecisionsIdMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+export const getApiDecisions = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<DecisionDto[]>(
+    { url: `/api/Decisions`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetApiDecisionsQueryKey = () => {
+  return [`/api/Decisions`] as const;
+};
+
+export const getGetApiDecisionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiDecisions>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getApiDecisions>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApiDecisionsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDecisions>>> = ({
+    signal,
+  }) => getApiDecisions(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiDecisions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiDecisionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiDecisions>>
 >;
-export type PostApiDecisionsResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDecisions>["postApiDecisions"]>>
+export type GetApiDecisionsQueryError = unknown;
+
+export function useGetApiDecisions<
+  TData = Awaited<ReturnType<typeof getApiDecisions>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisions>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDecisions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDecisions>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiDecisions<
+  TData = Awaited<ReturnType<typeof getApiDecisions>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisions>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDecisions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDecisions>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiDecisions<
+  TData = Awaited<ReturnType<typeof getApiDecisions>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisions>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useGetApiDecisions<
+  TData = Awaited<ReturnType<typeof getApiDecisions>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiDecisions>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiDecisionsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const postApiDecisions = (
+  createDecisionCommand: CreateDecisionCommand,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/Decisions`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createDecisionCommand,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getPostApiDecisionsMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiDecisions>>,
+    TError,
+    { data: CreateDecisionCommand },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiDecisions>>,
+  TError,
+  { data: CreateDecisionCommand },
+  TContext
+> => {
+  const mutationKey = ["postApiDecisions"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiDecisions>>,
+    { data: CreateDecisionCommand }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postApiDecisions(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiDecisionsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiDecisions>>
 >;
-export type PostApiDecisionsIdPublishResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getDecisions>["postApiDecisionsIdPublish"]>
-  >
+export type PostApiDecisionsMutationBody = CreateDecisionCommand;
+export type PostApiDecisionsMutationError = unknown;
+
+export const usePostApiDecisions = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postApiDecisions>>,
+      TError,
+      { data: CreateDecisionCommand },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postApiDecisions>>,
+  TError,
+  { data: CreateDecisionCommand },
+  TContext
+> => {
+  const mutationOptions = getPostApiDecisionsMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+export const postApiDecisionsIdPublish = (
+  id: number,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/api/Decisions/${id}/publish`, method: "POST", signal },
+    options,
+  );
+};
+
+export const getPostApiDecisionsIdPublishMutationOptions = <
+  TError = ProblemDetails,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiDecisionsIdPublish>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiDecisionsIdPublish>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["postApiDecisionsIdPublish"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiDecisionsIdPublish>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return postApiDecisionsIdPublish(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiDecisionsIdPublishMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiDecisionsIdPublish>>
 >;
+
+export type PostApiDecisionsIdPublishMutationError = ProblemDetails;
+
+export const usePostApiDecisionsIdPublish = <
+  TError = ProblemDetails,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postApiDecisionsIdPublish>>,
+      TError,
+      { id: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postApiDecisionsIdPublish>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationOptions = getPostApiDecisionsIdPublishMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};

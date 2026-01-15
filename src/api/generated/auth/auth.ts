@@ -4,46 +4,181 @@
  * PurposePunch.Api
  * OpenAPI spec version: 1.0
  */
+import { useMutation } from "@tanstack/react-query";
+import type {
+  MutationFunction,
+  QueryClient,
+  UseMutationOptions,
+  UseMutationResult,
+} from "@tanstack/react-query";
+
 import type { LoginCommand, RegisterCommand } from ".././model";
 
 import { customInstance } from "../../mutator/custom-instance";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getAuth = () => {
-  const postApiAuthRegister = (
-    registerCommand: RegisterCommand,
-    options?: SecondParameter<typeof customInstance<void>>,
-  ) => {
-    return customInstance<void>(
-      {
-        url: `/api/Auth/register`,
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: registerCommand,
-      },
-      options,
-    );
-  };
-  const postApiAuthLogin = (
-    loginCommand: LoginCommand,
-    options?: SecondParameter<typeof customInstance<void>>,
-  ) => {
-    return customInstance<void>(
-      {
-        url: `/api/Auth/login`,
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: loginCommand,
-      },
-      options,
-    );
-  };
-  return { postApiAuthRegister, postApiAuthLogin };
+export const postApiAuthRegister = (
+  registerCommand: RegisterCommand,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/Auth/register`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: registerCommand,
+      signal,
+    },
+    options,
+  );
 };
-export type PostApiAuthRegisterResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getAuth>["postApiAuthRegister"]>>
+
+export const getPostApiAuthRegisterMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiAuthRegister>>,
+    TError,
+    { data: RegisterCommand },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiAuthRegister>>,
+  TError,
+  { data: RegisterCommand },
+  TContext
+> => {
+  const mutationKey = ["postApiAuthRegister"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiAuthRegister>>,
+    { data: RegisterCommand }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postApiAuthRegister(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiAuthRegisterMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiAuthRegister>>
 >;
-export type PostApiAuthLoginResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getAuth>["postApiAuthLogin"]>>
+export type PostApiAuthRegisterMutationBody = RegisterCommand;
+export type PostApiAuthRegisterMutationError = unknown;
+
+export const usePostApiAuthRegister = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postApiAuthRegister>>,
+      TError,
+      { data: RegisterCommand },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postApiAuthRegister>>,
+  TError,
+  { data: RegisterCommand },
+  TContext
+> => {
+  const mutationOptions = getPostApiAuthRegisterMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+export const postApiAuthLogin = (
+  loginCommand: LoginCommand,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/Auth/login`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: loginCommand,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getPostApiAuthLoginMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiAuthLogin>>,
+    TError,
+    { data: LoginCommand },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiAuthLogin>>,
+  TError,
+  { data: LoginCommand },
+  TContext
+> => {
+  const mutationKey = ["postApiAuthLogin"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiAuthLogin>>,
+    { data: LoginCommand }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postApiAuthLogin(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiAuthLoginMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiAuthLogin>>
 >;
+export type PostApiAuthLoginMutationBody = LoginCommand;
+export type PostApiAuthLoginMutationError = unknown;
+
+export const usePostApiAuthLogin = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postApiAuthLogin>>,
+      TError,
+      { data: LoginCommand },
+      TContext
+    >;
+    request?: SecondParameter<typeof customInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postApiAuthLogin>>,
+  TError,
+  { data: LoginCommand },
+  TContext
+> => {
+  const mutationOptions = getPostApiAuthLoginMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
