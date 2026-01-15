@@ -11,6 +11,7 @@
     "api:gen": "orval"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.17",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
     "formik": "^2.4.9",
