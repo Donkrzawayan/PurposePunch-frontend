@@ -1,36 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
 import { AuthLayout } from '../components/layout/AuthLayout';
-import { useAsyncActionForForm } from '../hooks/useAsyncActionForForm';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { login } = useAuth();
+  const { login, isLoggingIn, loginError, isAuthenticated, clearErrors } = useAuth();
   const navigate = useNavigate();
-  const { isSubmitting, error, execute } = useAsyncActionForForm();
+
+  useEffect(() => {
+    clearErrors();
+  }, [clearErrors]);
+  
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await execute(
-      async () => {
-        await login({ email, password });
-        navigate('/dashboard');
-      },
-      t.login.error
-    );
+    try {
+      await login({ email, password });
+    } catch {}
   };
 
   return (
     <AuthLayout
       title={`${t.login.loginTo} ${t.common.name}`}
-      error={error}
-      isSubmitting={isSubmitting}
+      error={loginError}
+      isSubmitting={isLoggingIn}
       onSubmit={handleSubmit}
       submitButtonText={t.login.loginButton}
       footerLinkText={t.login.registerLink}

@@ -1,14 +1,20 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { getAuth } from '../api/generated/auth/auth';
+import { createContext, useContext, useState, useEffect, type ReactNode, useCallback } from 'react';
+import { usePostApiAuthLogin, usePostApiAuthRegister } from '../api/generated/auth/auth';
 import type { LoginCommand, RegisterCommand } from '../api/generated/model';
+import { getErrorMessage } from '../utils/errorUtils';
+import { t } from '../textResources';
 
 interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
+  isLoggingIn: boolean;
+  isRegistering: boolean;
+  loginError: string | null;
+  registerError: string | null;
   login: (data: LoginCommand) => Promise<void>;
   register: (data: RegisterCommand) => Promise<void>;
   logout: () => void;
+  clearErrors: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,7 +22,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const loginMutation = usePostApiAuthLogin();
+  const registerMutation = usePostApiAuthRegister();
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -24,13 +31,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setToken(storedToken);
       setIsAuthenticated(true);
     }
-    setIsLoading(false);
   }, []);
 
   const login = async (data: LoginCommand) => {
     try {
-      const { postApiAuthLogin } = getAuth();
-      const response = await postApiAuthLogin(data);
+      const response = await loginMutation.mutateAsync({ data });
       setToken(response.token);
       localStorage.setItem('token', response.token);
       setIsAuthenticated(true);
@@ -42,8 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = async (data: RegisterCommand) => {
     try {
-      const { postApiAuthRegister } = getAuth();
-      await postApiAuthRegister(data);
+      await registerMutation.mutateAsync({ data });
     } catch (error) {
       console.error("Registration failed", error);
       throw error;
@@ -54,10 +58,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     setIsAuthenticated(false);
     localStorage.removeItem('token');
+
+    loginMutation.reset();
+    registerMutation.reset();
   };
 
+    // Destructure reset functions to maintain stable references for useCallback dependencies,
+    // preventing unnecessary re-renders.
+  const { reset: resetLogin } = loginMutation;
+  const { reset: resetRegister } = registerMutation;
+
+  const clearErrors = useCallback(() => {
+    resetLogin();
+    resetRegister();
+  }, [resetLogin, resetRegister]);
+
+  const loginError = loginMutation.isError ? getErrorMessage(loginMutation.error, t.login.error) : null;
+  const registerError = registerMutation.isError ? getErrorMessage(registerMutation.error, t.register.errors.failed) : null;
+
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{
+      token, isAuthenticated,
+      isLoggingIn: loginMutation.isPending, isRegistering: registerMutation.isPending,
+      loginError, registerError,
+      login, register, logout,
+      clearErrors
+    }}>
       {children}
     </AuthContext.Provider>
   );
