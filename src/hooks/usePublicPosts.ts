@@ -1,60 +1,38 @@
-import { useState, useEffect, useCallback } from 'react';
-import { getPublicPosts } from '../api/generated/public-posts/public-posts';
-import type { PublicPostDto } from '../api/generated/model';
+import { getApiPublicPosts } from '../api/generated/public-posts/public-posts';
 import { t } from '../textResources';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { getErrorMessage } from '../utils/errorUtils';
 
 export const usePublicPosts = (pageSize: number = 10) => {
-  const [posts, setPosts] = useState<PublicPostDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const query = useInfiniteQuery({
+    queryKey: ['public-posts', pageSize],
 
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-
-  const fetchPosts = useCallback(async (pageNumber: number) => {
-    try {
-      setError(null);
-      if (pageNumber === 1) setLoading(true);
-      else setLoadingMore(true);
-
-      const { getApiPublicPosts } = getPublicPosts();
+    queryFn: async ({ pageParam = 1 }) => {
       const result = await getApiPublicPosts({
-        PageNumber: pageNumber,
-        PageSize: pageSize
+        PageNumber: pageParam,
+        PageSize: pageSize,
       });
-      const items = result.items || [];
+      return result;
+    },
 
-      setPosts(prev => pageNumber === 1 ? items : [...prev, ...items]);
-      setHasMore(result.pageNumber < result.totalPages);
-      setPage(pageNumber);
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.pageNumber < lastPage.totalPages) {
+        return lastPage.pageNumber + 1;
+      }
+      return undefined;
+    },
+  });
 
-    } catch (err) {
-      setError(getErrorMessage(err, t.common.networkError));
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  }, [pageSize]);
-
-  useEffect(() => {
-    fetchPosts(1);
-  }, [fetchPosts]);
-
-  const loadNextPage = useCallback(() => {
-    if (!loading && !loadingMore && hasMore) {
-      fetchPosts(page + 1);
-    }
-  }, [loading, loadingMore, hasMore, page, fetchPosts]);
+  const posts = query.data?.pages.flatMap((page) => page.items ?? []) ?? [];
 
   return {
     posts,
-    loading,
-    loadingMore,
-    error,
-    hasMore,
-    loadNextPage,
-    refresh: useCallback(() => fetchPosts(1), [fetchPosts])
+    loading: query.isLoading,
+    loadingMore: query.isFetchingNextPage,
+    error: query.isError ? getErrorMessage(query.error, t.common.networkError) : null,
+    hasMore: query.hasNextPage,
+    loadNextPage: query.fetchNextPage,
+    refresh: query.refetch
   };
 };

@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-import { getDecisions } from '../api/generated/decisions/decisions';
-import type { DecisionDto } from '../api/generated/model';
+import { useGetApiDecisions } from '../api/generated/decisions/decisions';
 import { Link, useNavigate } from 'react-router-dom';
 import { t } from '../textResources';
 import { getErrorMessage } from '../utils/errorUtils';
@@ -11,33 +9,15 @@ import { Alert } from '../components/common/Alert';
 import { DecisionCard } from '../components/decision/DecisionCard';
 
 const Dashboard = () => {
+  const { data, isLoading, error } = useGetApiDecisions();
   const navigate = useNavigate();
-  const [decisions, setDecisions] = useState<DecisionDto[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchDecisions = async () => {
-      try {
-        const { getApiDecisions } = getDecisions();
-        const data = await getApiDecisions();
-        setDecisions(data);
-      } catch (err) {
-        setError(getErrorMessage(err, t.dashboard.error));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDecisions();
-  }, []);
 
   if (isLoading) {
     return <div className="p-8 text-center text-gray-500">{t.common.loading}</div>;
   }
 
   if (error) {
-    return <Alert message={error} />;
+    return <Alert message={getErrorMessage(error, t.dashboard.error)} />;
   }
 
   return (
@@ -53,7 +33,7 @@ const Dashboard = () => {
         </Button>
       </div>
 
-      {decisions.length === 0 ? (
+      {data.length === 0 ? (
         <Card className="text-center">
           <p className="text-gray-500 mb-4">{t.dashboard.noneDecision}</p>
           <Link to="/create" className="text-blue-600 font-bold hover:underline">
@@ -62,7 +42,7 @@ const Dashboard = () => {
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {decisions.map((decision) => (
+          {data.map((decision) => (
             <DecisionCard key={decision.id} decision={decision} />
           ))}
         </div>

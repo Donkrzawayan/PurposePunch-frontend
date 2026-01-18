@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getDecisions } from '../api/generated/decisions/decisions';
-import { type DecisionDto, DecisionStatus, type UpdateDecisionCommand } from '../api/generated/model';
+import { getGetApiDecisionsIdQueryKey, useGetApiDecisionsId, usePostApiDecisionsIdPublish, usePutApiDecisionsId } from '../api/generated/decisions/decisions';
+import { DecisionStatus, type UpdateDecisionCommand } from '../api/generated/model';
 import { t } from '../textResources';
 import { ReflectionHeader } from '../components/reflection/ReflectionHeader';
 import { Phase1 } from '../components/reflection/Phase1';
@@ -9,81 +8,76 @@ import { Phase2Result } from '../components/reflection/Phase2Result';
 import { Phase2Form, type ReflectionFormData } from '../components/reflection/Phase2Form';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Alert } from '../components/common/Alert';
-import { useAsyncActionForForm } from '../hooks/useAsyncActionForForm';
+import { useQueryClient } from '@tanstack/react-query';
+import { getErrorMessage } from '../utils/errorUtils';
 
 const ReflectionPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { isSubmitting, error, setError, execute } = useAsyncActionForForm();
-
-  const [decision, setDecision] = useState<DecisionDto | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const { getApiDecisionsId, putApiDecisionsId, postApiDecisionsIdPublish } = getDecisions();
-
-  useEffect(() => {
-    const fetchDecision = async () => {
-      if (!id) return;
-      try {
-        const data = await getApiDecisionsId(Number(id))
-        setDecision(data);
-      } catch (err) {
-        console.error(err);
-        setError(t.common.networkError);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDecision();
-  }, [id]);
+  const decisionId = Number(id);
+  const queryClient = useQueryClient();
+  const { data, isLoading, error } = useGetApiDecisionsId(decisionId);
+  const updateMutation = usePutApiDecisionsId();
+  const publishMutation = usePostApiDecisionsIdPublish();
+  const isSubmitting = updateMutation.isPending || publishMutation.isPending;
 
   const handleFormSubmit = async (formData: ReflectionFormData, shouldPublish: boolean) => {
-    if (!decision) return;
+    if (!data) return;
 
-    await execute(
-      async () => {
-        const command: UpdateDecisionCommand = {
-          id: decision.id,
-          title: decision.title,
-          description: decision.description,
-          expectedOutcome: decision.expectedOutcome,
-          visibility: decision.visibility,
-          actualOutcome: formData.actualOutcome,
-          lessonsLearned: formData.lessonsLearned,
-          privateNotes: formData.privateNotes,
-          satisfaction: formData.satisfaction
-        };
+    try {
+      const command: UpdateDecisionCommand = {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        expectedOutcome: data.expectedOutcome,
+        visibility: data.visibility,
+        actualOutcome: formData.actualOutcome,
+        lessonsLearned: formData.lessonsLearned,
+        privateNotes: formData.privateNotes,
+        satisfaction: formData.satisfaction
+      };
 
-        await putApiDecisionsId(decision.id, command);
+      await updateMutation.mutateAsync({ id: decisionId, data: command });
 
-        if (shouldPublish) {
-          await postApiDecisionsIdPublish(decision.id);
-        }
+      if (shouldPublish) {
+        await publishMutation.mutateAsync({ id: decisionId });
+      }
 
-        window.location.reload();
-      },
-      t.reflection.errors.updateFailed
-    );
+      await queryClient.invalidateQueries({
+        queryKey: getGetApiDecisionsIdQueryKey(decisionId)
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['decisions'] });
+    } catch (err) {
+      console.error("Failed to update/publish", err);
+    }
   };
 
-  if (loading) return <div className="p-8 text-center">{t.common.loading}</div>;
-  if (error) return <Alert message={error} />;
-  if (!decision) return <div className="p-8 text-center">{t.reflection.errors.missingDecision}</div>;
+  const displayError = () => {
+    if (error) return getErrorMessage(error);
+    if (updateMutation.isError) return getErrorMessage(updateMutation.error, t.reflection.errors.updateFailed);
+    if (publishMutation.isError) return getErrorMessage(publishMutation.error, t.reflection.errors.updateFailed);
+    return null;
+  }
 
-  const isReadOnly = decision.status === DecisionStatus.Reflected;
+  if (isLoading) return <div className="p-8 text-center">{t.common.loading}</div>;
+  if (error) return <Alert message={displayError()} />;
+  if (!data) return <div className="p-8 text-center">{t.reflection.errors.missingDecision}</div>;
+
+  const isReadOnly = data.status === DecisionStatus.Reflected;
 
   return (
     <PageContainer className="max-w-4xl">
-      <ReflectionHeader decision={decision} />
+      <ReflectionHeader decision={data} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Phase1 decision={decision} />
+        <Phase1 decision={data} />
 
         {isReadOnly ? (
-          <Phase2Result decision={decision} />
+          <Phase2Result decision={data} />
         ) : (
           <Phase2Form
-            status={decision.status}
-            visibility={decision.visibility}
+            status={data.status}
+            visibility={data.visibility}
             isSubmitting={isSubmitting}
             onSubmit={handleFormSubmit}
           />

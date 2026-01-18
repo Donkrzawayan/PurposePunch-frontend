@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { PublicPostDto } from '../../api/generated/model';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
-import { getPublicPosts } from '../../api/generated/public-posts/public-posts';
+import { usePostApiPublicPostsIdUpvote } from '../../api/generated/public-posts/public-posts';
 import { cn } from '../../utils/cn';
 import { t } from '../../textResources';
 import { PostSection } from './PostSection';
@@ -15,28 +15,24 @@ interface Props {
 export const PublicPostCard = ({ post }: Props) => {
   const [votes, setVotes] = useState(post.upvoteCount);
   const [hasUpvoted, setHasUpvoted] = useState(post.isUpvoted);
-  const [isUpvoting, setIsUpvoting] = useState(false);
+  const upvoteMutation = usePostApiPublicPostsIdUpvote();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const lessonsOrOutcome = post.lessonsLearned || post.actualOutcome || "";
   const contentIsLong = (post.description.length + lessonsOrOutcome.length) > 200;
 
   const handleUpvote = async () => {
-    if (hasUpvoted || isUpvoting) return;
+    if (hasUpvoted || upvoteMutation.isPending) return;
 
-    setIsUpvoting(true);
     setVotes((prev) => prev + 1);
     setHasUpvoted(true);
 
     try {
-      const { postApiPublicPostsIdUpvote } = getPublicPosts();
-      await postApiPublicPostsIdUpvote(post.id);
+      await upvoteMutation.mutateAsync({ id: post.id });
     } catch (error) {
       console.error("Upvote failed", error);
       setVotes((prev) => prev - 1);
       setHasUpvoted(false);
-    } finally {
-      setIsUpvoting(false);
     }
   };
 
@@ -90,7 +86,7 @@ export const PublicPostCard = ({ post }: Props) => {
             variant="secondary"
             size="sm"
             onClick={handleUpvote}
-            disabled={hasUpvoted || isUpvoting}
+            disabled={hasUpvoted || upvoteMutation.isPending}
             className={cn(
               "text-xs transition-all flex items-center gap-2",
               hasUpvoted

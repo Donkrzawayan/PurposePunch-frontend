@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDecisions } from '../api/generated/decisions/decisions';
+import { usePostApiDecisions } from '../api/generated/decisions/decisions';
 import { type CreateDecisionCommand, Visibility } from '../api/generated/model';
 import { t } from '../textResources';
 import { FormField } from '../components/common/FormField';
@@ -8,11 +8,12 @@ import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Alert } from '../components/common/Alert';
-import { useAsyncActionForForm } from '../hooks/useAsyncActionForForm';
+import { getErrorMessage } from '../utils/errorUtils';
 
 const CreateDecision = () => {
   const navigate = useNavigate();
-  const { isSubmitting, error, setError, execute } = useAsyncActionForForm();
+  const createMutation = usePostApiDecisions();
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 1);
@@ -27,51 +28,56 @@ const CreateDecision = () => {
     e.preventDefault();
 
     if (!title.trim()) {
-      setError(t.createDecision.errors.missingTitle);
+      setValidationError(t.createDecision.errors.missingTitle);
       return;
     }
 
     const selectedDate = new Date(reflectionDate);
     const oneHourInFuture = new Date(new Date().getTime() + 60 * 60 * 1000);
     if (selectedDate < oneHourInFuture) {
-      setError(t.createDecision.errors.dateTooSoon);
+      setValidationError(t.createDecision.errors.dateTooSoon);
       return;
     }
 
     if (!description.trim()) {
-      setError(t.createDecision.errors.missingDescription);
+      setValidationError(t.createDecision.errors.missingDescription);
       return;
     }
 
     if (!expectedOutcome.trim()) {
-      setError(t.createDecision.errors.missingOutcome);
+      setValidationError(t.createDecision.errors.missingOutcome);
       return;
     }
 
-    await execute(
-      async () => {
-        const command: CreateDecisionCommand = {
-          title,
-          description,
-          expectedOutcome,
-          visibility,
-          expectedReflectionDate: new Date(reflectionDate).toISOString()
-        };
+    setValidationError(null);
+    try {
+      const command: CreateDecisionCommand = {
+        title,
+        description,
+        expectedOutcome,
+        visibility,
+        expectedReflectionDate: new Date(reflectionDate).toISOString()
+      };
 
-        const { postApiDecisions } = getDecisions();
-        await postApiDecisions(command);
-        navigate('/dashboard');
-      },
-      t.createDecision.errors.createFailed
-    );
+      await createMutation.mutateAsync({ data: command });
+      navigate('/dashboard');
+    } catch (err) {
+      console.error("Failed to create", err);
+    }
   };
+
+  const displayError = () => {
+    if (validationError) return validationError;
+    if (createMutation.isError) return getErrorMessage(createMutation.error, t.createDecision.errors.createFailed);
+    return null;
+  }
 
   return (
     <PageContainer className="max-w-2xl">
       <Card>
         <h1 className="text-2xl font-bold text-gray-800 mb-6">{t.createDecision.title}</h1>
 
-        <Alert message={error} />
+        <Alert message={displayError()} />
 
         <form onSubmit={validateAndSubmit} className="space-y-6">
 
@@ -79,10 +85,13 @@ const CreateDecision = () => {
             id="title" label={t.createDecision.form.titleLabel} required
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (validationError) setValidationError(null);
+            }}
             placeholder={t.createDecision.form.titlePlaceholder}
             maxLength={60}
-            error={error && !title.trim() ? t.createDecision.errors.missingTitle : null}
+            error={validationError && !title.trim() ? t.createDecision.errors.missingTitle : null}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -91,7 +100,10 @@ const CreateDecision = () => {
               id="date" label={t.decision.expectedReflectionDate} required helperText={t.createDecision.form.dateHelp}
               type="datetime-local"
               value={reflectionDate}
-              onChange={(e) => setReflectionDate(e.target.value)}
+              onChange={(e) => {
+                setReflectionDate(e.target.value);
+                if (validationError) setValidationError(null);
+              }}
             />
 
             <FormField
@@ -111,20 +123,26 @@ const CreateDecision = () => {
             id="description" label={t.decision.description} required
             type="textarea"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              if (validationError) setValidationError(null);
+            }}
             placeholder={t.createDecision.form.descriptionPlaceholder}
             rows={4}
-            error={error && !description.trim() ? t.createDecision.errors.missingDescription : null}
+            error={validationError && !description.trim() ? t.createDecision.errors.missingDescription : null}
           />
 
           <FormField
             id="outcome" label={t.decision.expectedOutcome} required
             type="textarea"
             value={expectedOutcome}
-            onChange={(e) => setExpectedOutcome(e.target.value)}
+            onChange={(e) => {
+              setExpectedOutcome(e.target.value);
+              if (validationError) setValidationError(null);
+            }}
             placeholder={t.createDecision.form.outcomePlaceholder}
             rows={3}
-            error={error && !expectedOutcome.trim() ? t.createDecision.errors.missingOutcome : null}
+            error={validationError && !expectedOutcome.trim() ? t.createDecision.errors.missingOutcome : null}
           />
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
@@ -137,8 +155,8 @@ const CreateDecision = () => {
             <Button
               type="submit"
               variant="primary"
-              isLoading={isSubmitting}
-              disabled={isSubmitting}
+              isLoading={createMutation.isPending}
+              disabled={createMutation.isPending}
             >
               {t.createDecision.form.submitButton}
             </Button>
